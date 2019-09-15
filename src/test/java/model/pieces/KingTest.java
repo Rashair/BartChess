@@ -37,7 +37,7 @@ class KingTest extends PieceTest {
 
     @Test
     public void cannotStepOnEndangeredFields() {
-        board.setPiece("f3", new Knight(king.colour.getOppositeColour())); // Endangered f5
+        board.setPiece("e3", new Knight(king.colour.getOppositeColour())); // Endangered f5
         board.setPiece("d7", new Rook(king.colour.getOppositeColour()));   // Endangered d column
 
         var source = "e5"; // center of chessboard
@@ -45,7 +45,6 @@ class KingTest extends PieceTest {
 
         List<Move> expected = Move.createMovesFromSource(source,
                 "e6", "f6",
-                "f5",
                 "e4", "f4");
         assertResultListMatchesExpected(result, expected);
     }
