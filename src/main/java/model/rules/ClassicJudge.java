@@ -5,6 +5,7 @@ import model.GameState;
 import model.grid.*;
 import model.pieces.*;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -48,57 +49,92 @@ public class ClassicJudge implements IJudge {
         var source = move.getSource();
         var destination = move.getDestination();
         var movedPiece = board.getPiece(source);
+        var destinationPiece = board.getPiece(destination);
 
         board.movePiece(move);
 
         var kingColour = movedPiece.colour;
         var kingPosition = board.getKingPosition(kingColour);
 
-        var result = false;
+        var isKingAttacked = false;
         if (kingPosition == destination) { // King has moved
-            result = isKingAttackedFromTop(kingColour, kingPosition) ||
+            isKingAttacked = isKingAttackedFromTop(kingColour, kingPosition) ||
                     isKingAttackedFromBottom(kingColour, kingPosition) ||
                     isKingAttackedFromLeft(kingColour, kingPosition) ||
                     isKingAttackedFromRight(kingColour, kingPosition);
-            result = result ||
-                    isKingAttackedFromBottomLeft(kingColour, kingPosition) ||
-                    isKingAttackedFromBottomRight(kingColour, kingPosition) ||
-                    isKingAttackedFromUpperLeft(kingColour, kingPosition) ||
-                    isKingAttackedFromUpperRight(kingColour, kingPosition);
+            if (!isKingAttacked) {
+                isKingAttacked = isKingAttackedFromBottomLeft(kingColour, kingPosition) ||
+                        isKingAttackedFromBottomRight(kingColour, kingPosition) ||
+                        isKingAttackedFromUpperLeft(kingColour, kingPosition) ||
+                        isKingAttackedFromUpperRight(kingColour, kingPosition);
+            }
+            if (!isKingAttacked) {
+                Set<Square> knightSquares = new HashSet<>() {{
+                    add(new Square(kingPosition.x + 2, kingPosition.y - 1));
+                    add(new Square(kingPosition.x + 2, kingPosition.y + 1));
+                    add(new Square(kingPosition.x - 2, kingPosition.y - 1));
+                    add(new Square(kingPosition.x - 2, kingPosition.y + 1));
+                    add(new Square(kingPosition.x + 1, kingPosition.y - 2));
+                    add(new Square(kingPosition.x - 1, kingPosition.y - 2));
+                    add(new Square(kingPosition.x + 1, kingPosition.y + 2));
+                    add(new Square(kingPosition.x - 1, kingPosition.y + 2));
+                }};
+                knightSquares.removeIf(Board::isOutOfBoardPosition);
+                knightSquares.removeIf(square -> {
+                    var piece = board.getPiece(square);
+                    return piece == null || !isKingAttackedFromPiece(kingColour, piece, Knight.class);
+                });
+
+                isKingAttacked = knightSquares.size() > 0;
+            }
+            if (!isKingAttacked) {
+                var rowToAdd = kingColour == Colour.White ? 1 : -1;
+                Square[] pawnSquares = {new Square(kingPosition.x + rowToAdd, kingPosition.y - 1),
+                        new Square(kingPosition.x + rowToAdd, kingPosition.y + 1)};
+
+                for (int i = 0; i < 2; ++i) {
+                    if (!Board.isOutOfBoardPosition(pawnSquares[i])) {
+                        var piece = board.getPiece(pawnSquares[i]);
+                        isKingAttacked = isKingAttacked ||
+                                (piece != null && isKingAttackedFromPiece(kingColour, piece, Pawn.class));
+                    }
+                }
+            }
         }
         else if (source.x == kingPosition.x) {
             if (source.y < kingPosition.y) {
-                result = isKingAttackedFromLeft(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromLeft(kingColour, kingPosition);
             }
             else { // source.y > kingPosition.y
-                result = isKingAttackedFromRight(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromRight(kingColour, kingPosition);
             }
         }
         else if (source.x < kingPosition.x) {
             if (source.y == kingPosition.y) {
-                result = isKingAttackedFromBottom(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromBottom(kingColour, kingPosition);
             }
             else if (source.y < kingPosition.y) {
-                result = isKingAttackedFromBottomLeft(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromBottomLeft(kingColour, kingPosition);
             }
             else { // source.y > kingPosition.y
-                result = isKingAttackedFromBottomRight(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromBottomRight(kingColour, kingPosition);
             }
         }
         else { // source.x > kingPosition.x
             if (source.y == kingPosition.y) {
-                result = isKingAttackedFromTop(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromTop(kingColour, kingPosition);
             }
             else if (source.y < kingPosition.y) {
-                result = isKingAttackedFromUpperLeft(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromUpperLeft(kingColour, kingPosition);
             }
             else { // source.y > kingPosition.y
-                result = isKingAttackedFromUpperRight(kingColour, kingPosition);
+                isKingAttacked = isKingAttackedFromUpperRight(kingColour, kingPosition);
             }
         }
 
         board.movePiece(destination, source);
-        return result;
+        board.setPiece(destination, destinationPiece);
+        return isKingAttacked;
     }
 
 
@@ -211,6 +247,10 @@ public class ClassicJudge implements IJudge {
 
     private boolean isKingAttackedFromPiece(Colour kingColour, Piece piece, Class<?> enemy1, Class<?> enemy2) {
         return piece.colour != kingColour && (enemy1.isInstance(piece) || enemy2.isInstance(piece));
+    }
+
+    private boolean isKingAttackedFromPiece(Colour kingColour, Piece piece, Class<?> enemy1) {
+        return isKingAttackedFromPiece(kingColour, piece, enemy1, Integer.class);
     }
 
 
