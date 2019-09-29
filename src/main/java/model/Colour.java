@@ -1,7 +1,5 @@
 package model;
 
-import static java.lang.Math.abs;
-
 public enum Colour {
     White(false),
     Black(true);

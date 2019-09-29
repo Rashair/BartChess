@@ -1,70 +1,70 @@
 package model.pieces;
 
 import model.Colour;
-import model.grid.Move;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 class KingTest extends PieceTest {
     private King king = new King(Colour.White);
 
+    @Override
+    Piece getTestedPiece() {
+        return king;
+    }
+
     @Test
     @Override
     void allValidPositions() {
-        var source = "e5"; // center of chessboard
-        List<Move> result = getMovesFromPosition(source, king);
+        assertThatResultMovesAreEqualExpected("e5",
+                "d6", "e6", "f6", // top
+                "d5", "f5",       // left, right
+                "d4", "e4", "f4"  // bottom
+        );
+    }
 
-        List<Move> expected = Move.createMovesFromSource(source,
-                "d6", "e6", "f6",
-                "d5", "f5",
-                "d4", "e4", "f4");
-        assertResultListMatchesExpected(result, expected);
+    @Test
+    @Override
+    void cannotEndangerKing() {
+        // Implemented in cannotStepEndangeredFieldsX tests (X = 1,2,3)
     }
 
 
     @Test
-    public void cannotCrossChessboardBorders() {
-        var source = "h8"; // corner of chessboard
-        List<Move> result = getMovesFromPosition(source, king);
-
-        List<Move> expected = Move.createMovesFromSource(source,
-                "g8",
-                "g7", "h7");
-        assertResultListMatchesExpected(result, expected);
+    @DisplayName("King in corner")
+    void cannotCrossChessboardBorders() {
+        assertThatResultMovesAreEqualExpected("h8",
+                "g8",       // left
+                "g7", "h7"  // bottom
+        );
     }
 
     @Test
-    public void cannotStepOnEndangeredFields1() {
+    @DisplayName("King threatened by knight or rook on move")
+    void cannotStepOnEndangeredFields1() {
         board.setPiece("e3", new Knight(king.colour.getOppositeColour())); // Endangered f5
         board.setPiece("d7", new Rook(king.colour.getOppositeColour()));   // Endangered d column
 
-        var source = "e5"; // center of chessboard
-        List<Move> result = getMovesFromPosition(source, king);
-
-        List<Move> expected = Move.createMovesFromSource(source,
-                "e6", "f6",
-                "e4", "f4");
-        assertResultListMatchesExpected(result, expected);
+        assertThatResultMovesAreEqualExpected("e5",
+                "e6", "f6", // top
+                "e4", "f4"  // bottom
+        );
     }
 
     @Test
-    public void cannotStepOnEndangeredFields2() {
+    @DisplayName("King threatened by pawn on move")
+    void cannotStepOnEndangeredFields2() {
         board.setPiece("e6", new Pawn(king.colour.getOppositeColour())); // Endangered d5 and f5
 
-        var source = "e5"; // center of chessboard
-        List<Move> result = getMovesFromPosition(source, king);
-
-        List<Move> expected = Move.createMovesFromSource(source,
-                "d6", "e6", "f6",
-                "d4", "e4", "f4");
-        assertResultListMatchesExpected(result, expected);
+        assertThatResultMovesAreEqualExpected("e5",
+                "d6", "e6", "f6",   // top
+                "d4", "e4", "f4"    // bottom
+        );
     }
 
     @Test
-    public void cannotStepOnEndangeredFields3() {
+    @DisplayName("King cannot move because of threats")
+    void cannotStepOnEndangeredFields3() {
         var oppositeColour = king.colour.getOppositeColour();
         board.setPiece("e3", new Knight(oppositeColour)); // Endangered f5
         board.setPiece("a4", new Rook(oppositeColour));   // Endangered 4-th row
@@ -72,11 +72,6 @@ class KingTest extends PieceTest {
         board.setPiece("h4", new Bishop(oppositeColour)); // Endangered f6
         board.setPiece("c7", new Pawn(oppositeColour));   // Endangered d6
 
-        var source = "e5"; // center of chessboard
-        List<Move> result = getMovesFromPosition(source, king);
-
-        List<Move> expected = new ArrayList<Move>();
-        assertResultListMatchesExpected(result, expected);
+        assertThatResultMovesAreEqualExpected("e5");
     }
-
 }

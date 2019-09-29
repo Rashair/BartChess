@@ -1,9 +1,5 @@
 package model;
 
-import model.grid.Square;
-
-import java.util.*;
-
 public class GameState {
     private final boolean[] isInCheck;
 

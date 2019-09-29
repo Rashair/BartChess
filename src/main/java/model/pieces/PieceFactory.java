@@ -3,7 +3,6 @@ package model.pieces;
 import model.Colour;
 
 import java.lang.reflect.InvocationTargetException;
-import java.rmi.AccessException;
 
 public class PieceFactory {
     private static PieceFactory factory;

@@ -5,7 +5,6 @@ import model.GameState;
 import model.grid.*;
 import model.pieces.*;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -140,8 +139,9 @@ public class ClassicJudge implements IJudge {
 
     private boolean isKingAttackedFromTop(Colour kingColour, Square kingPosition) {
         for (int i = kingPosition.x + 1; i < Board.rowsNum; ++i) {
-            if (isKingAttackedFromQueenOrRook(kingColour, i, kingPosition.y)) {
-                return true;
+            var currPiece = board.getPiece(i, kingPosition.y);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Rook.class);
             }
         }
 
@@ -150,8 +150,9 @@ public class ClassicJudge implements IJudge {
 
     private boolean isKingAttackedFromBottom(Colour kingColour, Square kingPosition) {
         for (int i = kingPosition.x - 1; i >= 0; --i) {
-            if (isKingAttackedFromQueenOrRook(kingColour, i, kingPosition.y)) {
-                return true;
+            var currPiece = board.getPiece(i, kingPosition.y);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Rook.class);
             }
         }
 
@@ -160,8 +161,9 @@ public class ClassicJudge implements IJudge {
 
     private boolean isKingAttackedFromLeft(Colour kingColour, Square kingPosition) {
         for (int i = kingPosition.y - 1; i >= 0; --i) {
-            if (isKingAttackedFromQueenOrRook(kingColour, kingPosition.x, i)) {
-                return true;
+            var currPiece = board.getPiece(kingPosition.x, i);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Rook.class);
             }
         }
 
@@ -170,18 +172,10 @@ public class ClassicJudge implements IJudge {
 
     private boolean isKingAttackedFromRight(Colour kingColour, Square kingPosition) {
         for (int i = kingPosition.y + 1; i < Board.columnsNum; ++i) {
-            if (isKingAttackedFromQueenOrRook(kingColour, kingPosition.x, i)) {
-                return true;
+            var currPiece = board.getPiece(kingPosition.x, i);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Rook.class);
             }
-        }
-
-        return false;
-    }
-
-    private boolean isKingAttackedFromQueenOrRook(Colour kingColour, int x, int y) {
-        Piece currentPiece = board.getPiece(x, y);
-        if (currentPiece != null) {
-            return isKingAttackedFromPiece(kingColour, currentPiece, Queen.class, Rook.class);
         }
 
         return false;
@@ -191,8 +185,9 @@ public class ClassicJudge implements IJudge {
         int i = kingPosition.x + 1;
         int j = kingPosition.y + 1;
         for (; i < Board.rowsNum && j < Board.columnsNum; ++i, ++j) {
-            if (isKingAttackedFromQueenOrBishop(kingColour, i, j)) {
-                return true;
+            var currPiece = board.getPiece(i, j);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Bishop.class);
             }
         }
 
@@ -203,8 +198,9 @@ public class ClassicJudge implements IJudge {
         int i = kingPosition.x + 1;
         int j = kingPosition.y - 1;
         for (; i < Board.rowsNum && j >= 0; ++i, --j) {
-            if (isKingAttackedFromQueenOrBishop(kingColour, i, j)) {
-                return true;
+            var currPiece = board.getPiece(i, j);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Bishop.class);
             }
         }
 
@@ -215,8 +211,9 @@ public class ClassicJudge implements IJudge {
         int i = kingPosition.x - 1;
         int j = kingPosition.y - 1;
         for (; i >= 0 && j >= 0; --i, --j) {
-            if (isKingAttackedFromQueenOrBishop(kingColour, i, j)) {
-                return true;
+            var currPiece = board.getPiece(i, j);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Bishop.class);
             }
         }
 
@@ -227,23 +224,14 @@ public class ClassicJudge implements IJudge {
         int i = kingPosition.x - 1;
         int j = kingPosition.y + 1;
         for (; i >= 0 && j < Board.columnsNum; --i, ++j) {
-            if (isKingAttackedFromQueenOrBishop(kingColour, i, j)) {
-                return true;
+            var currPiece = board.getPiece(i, j);
+            if (currPiece != null) {
+                return isKingAttackedFromPiece(kingColour, currPiece, Queen.class, Bishop.class);
             }
         }
 
         return false;
     }
-
-    private boolean isKingAttackedFromQueenOrBishop(Colour kingColour, int x, int y) {
-        Piece currentPiece = board.getPiece(x, y);
-        if (currentPiece != null) {
-            return isKingAttackedFromPiece(kingColour, currentPiece, Queen.class, Bishop.class);
-        }
-
-        return false;
-    }
-
 
     private boolean isKingAttackedFromPiece(Colour kingColour, Piece piece, Class<?> enemy1, Class<?> enemy2) {
         return piece.colour != kingColour && (enemy1.isInstance(piece) || enemy2.isInstance(piece));

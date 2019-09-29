@@ -3,9 +3,6 @@ package model.grid;
 import model.Colour;
 import model.pieces.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Board {
     public static final int rowsNum = 8;
     public static final int columnsNum = 8;
@@ -24,7 +21,7 @@ public class Board {
         kingPosition[Colour.White.getIntValue()] = parsePosition("e1");
 
         setPiece("e8", factory.create(King.class, Colour.Black));
-        kingPosition[Colour.Black.getIntValue()] = parsePosition("e1");
+        kingPosition[Colour.Black.getIntValue()] = parsePosition("e8");
 
 
         setupPawns();
@@ -53,7 +50,11 @@ public class Board {
         movePiece(move.getSource(), move.getDestination());
     }
 
-    public void setPiece(int x, int y, Piece piece) {
+    public void movePiece(String source, String destination) {
+        movePiece(parsePosition(source), parsePosition(destination));
+    }
+
+    private void setPiece(int x, int y, Piece piece) {
         pieces[x][y] = piece;
     }
 
@@ -95,7 +96,7 @@ public class Board {
 
     /**
      * @param pos - must be in lowercase
-     * @returns Square representing position on chessboard
+     * @return Square representing position on chessboard
      */
     public static Square parsePosition(String pos) {
         int x = pos.charAt(1) - '1';

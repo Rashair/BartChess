@@ -1,12 +1,10 @@
 package model.grid;
 
-import model.pieces.Piece;
-
 import java.util.Objects;
 
 public class Square implements Comparable<Square> {
-    public int x;
-    public int y;
+    public int x; // rowNumber
+    public int y; // columnNumber
 
     public Square(int x, int y) {
         this.x = x;

@@ -1,11 +1,5 @@
 package model;
 
-import model.grid.Board;
-import model.grid.Move;
-import model.pieces.Piece;
-import model.pieces.PieceFactory;
-
-import javax.management.modelmbean.ModelMBean;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,7 +13,7 @@ public abstract class GameTest {
 
 
     protected static <T> void assertResultListMatchesExpected(List<T> result, List<T> expected) {
-        assertThat(result, hasSize(expected.size()));
-        assertTrue(result.containsAll(expected));
+        assertThat("Different size than expected", result, hasSize(expected.size()));
+        assertTrue(result.containsAll(expected), "Does not contain all expected objects");
     }
 }

@@ -5,7 +5,6 @@ import model.grid.Board;
 import model.rules.IJudge;
 import model.grid.Move;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Piece {
