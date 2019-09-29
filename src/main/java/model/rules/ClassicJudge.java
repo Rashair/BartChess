@@ -285,7 +285,10 @@ public class ClassicJudge implements IJudge {
 
         removeStandardInvalidPositions(possiblePositions, knight.colour);
 
-        return Move.createMovesFromSource(new Square(x, y), possiblePositions.toArray(Square[]::new));
+        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions.toArray(Square[]::new));
+        result.removeIf(this::isKingAttackedAfterOwnPieceMove);
+
+        return result;
     }
 
     // TODO: En passant logic

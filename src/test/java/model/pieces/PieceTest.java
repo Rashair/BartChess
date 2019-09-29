@@ -12,6 +12,8 @@ import java.util.List;
 abstract class PieceTest extends GameTest {
     Board board = model.getBoard();
 
+    abstract Piece getTestedPiece();
+
     @Test
     abstract void allValidPositions();
 
@@ -22,8 +24,6 @@ abstract class PieceTest extends GameTest {
     void setUp() {
         board.clearAllPieces();
     }
-
-    abstract Piece getTestedPiece();
 
     List<Move> getMovesFromPosition(String pos, Piece piece) {
         return piece.getValidMoves(model.getJudge(), pos);
