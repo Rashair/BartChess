@@ -21,16 +21,21 @@ class KnightTest extends PieceTest {
     @Override
     void allValidPositions() {
         assertThatResultMovesAreEqualExpected("f3",
-                "e5", "g5", // top
-                "h2", "h4", // right
-                "e1", "g1", // bottom
-                "d2", "d4"  // left
+                "e5", "g5", // Top
+                "h2", "h4", // Right
+                "e1", "g1", // Bottom
+                "d2", "d4"  // Left
         );
     }
 
+    @Test
+    @DisplayName("Knight at b8")
     @Override
     void cannotCrossChessboardBorders() {
-
+        assertThatResultMovesAreEqualExpected("b8",
+                "d7",       // Right
+                "a6", "c6"  // Bottom
+        );
     }
 
     @Test
@@ -43,13 +48,29 @@ class KnightTest extends PieceTest {
         assertThatResultMovesAreEqualExpected("b2");
     }
 
+    @Test
+    @DisplayName("Knight can only move to kill enemy pawn")
     @Override
     void canOnlyKillThreatToKing() {
+        setupKingForTests("b4", ally);
+        board.setPiece("a5", new Pawn(enemy));   // Threat to king
+        state.setCheck(ally, true);
 
+        assertThatResultMovesAreEqualExpected("b3",
+                "a5" // Kill the pawn
+        );
     }
 
+    @Test
+    @DisplayName("Knight can only move to hide king from enemy rook attack range")
     @Override
     void canOnlyProtectKingFromThreat() {
+        setupKingForTests("b4", ally);
+        board.setPiece("e4", new Rook(enemy));   // Threat to king
+        state.setCheck(ally, true);
 
+        assertThatResultMovesAreEqualExpected("b3",
+                "d4" // Hide king from enemy rook attack range
+        );
     }
 }
