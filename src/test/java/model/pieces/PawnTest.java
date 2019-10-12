@@ -5,7 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class PawnTest extends PieceTest {
-    private Pawn pawn = new Pawn(Colour.Black);
+    private final Pawn pawn;
+
+    PawnTest(){
+        super(Colour.Black);
+        pawn = new Pawn(ally);
+    }
 
     @Override
     Piece getTestedPiece() {

@@ -4,9 +4,13 @@ import model.Colour;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
 class QueenTest extends PieceTest {
-    private Queen queen = new Queen(Colour.White);
+    private final Queen queen;
+
+    QueenTest() {
+        super(Colour.White);
+        queen = new Queen(ally);
+    }
 
     @Override
     Piece getTestedPiece() {

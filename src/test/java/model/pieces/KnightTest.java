@@ -5,7 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class KnightTest extends PieceTest {
-    private Knight knight = new Knight(Colour.White);
+    private final Knight knight;
+
+    KnightTest() {
+        super(Colour.White);
+        knight = new Knight(ally);
+    }
 
     @Override
     Piece getTestedPiece() {

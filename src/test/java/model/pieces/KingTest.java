@@ -9,7 +9,12 @@ import org.junit.jupiter.api.Test;
 // all we care about is next position of king
 // which is checked for those cases
 class KingTest extends PieceTest {
-    private King king = new King(Colour.White);
+    private final King king;
+
+    KingTest(){
+        super(Colour.White);
+        king = new King(ally);
+    }
 
     @Override
     Piece getTestedPiece() {

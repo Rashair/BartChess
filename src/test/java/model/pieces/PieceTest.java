@@ -11,11 +11,17 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 abstract class PieceTest extends GameTest {
-    Board board = model.getBoard();
-    GameState state = model.getState();
-    Colour ally = getTestedPiece().colour;
-    Colour enemy = ally.getOppositeColour();
-    // TODO: Add methods to return colour and oppositeColour for testedPiece.
+    final Board board;
+    final GameState state;
+    final Colour ally;
+    final Colour enemy;
+
+    public PieceTest(Colour ally){
+        this.board = model.getBoard();
+        this.state = model.getState();
+        this.ally = ally;
+        this.enemy = ally.getOppositeColour();
+    }
 
     abstract Piece getTestedPiece();
 

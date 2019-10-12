@@ -4,9 +4,13 @@ import model.Colour;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
 class RookTest extends PieceTest {
-    private Rook rook = new Rook(Colour.White);
+    private final Rook rook;
+
+    RookTest() {
+        super(Colour.White);
+        rook = new Rook(ally);
+    }
 
     @Override
     Piece getTestedPiece() {
