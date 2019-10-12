@@ -34,7 +34,7 @@ public class ClassicJudge implements IJudge {
 
         return resultMoves;
     }
-    
+
     private boolean isKingAttackedAfterOwnPieceMove(Move move) {
         var source = move.getSource();
         var destination = move.getDestination();
@@ -47,7 +47,7 @@ public class ClassicJudge implements IJudge {
         var kingPosition = board.getKingPosition(kingColour);
 
         var isKingAttacked = false;
-        if (kingPosition == destination) { // King has moved
+        if (kingPosition == destination || state.isInCheck(kingColour)) { // King has moved
             isKingAttacked = isKingAttackedFromTop(kingColour, kingPosition) ||
                     isKingAttackedFromBottom(kingColour, kingPosition) ||
                     isKingAttackedFromLeft(kingColour, kingPosition) ||

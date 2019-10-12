@@ -28,9 +28,15 @@ class QueenTest extends PieceTest {
         );
     }
 
+    @Test
+    @DisplayName("Queen in right-lower corner")
     @Override
     void cannotCrossChessboardBorders() {
-
+        assertThatResultMovesAreEqualExpected("h1",
+                "h2", "h3", "h4", "h5", "h6", "h7", "h8",   // top
+                "g1", "f1", "e1", "d1", "c1", "b1", "a1",   // left
+                "g2", "f3", "e4", "d5", "c6", "b7", "a8"    // diagonal upper-left
+        );
     }
 
     @Test
@@ -45,13 +51,29 @@ class QueenTest extends PieceTest {
         );
     }
 
+    @Test
+    @DisplayName("Queen can only move to kill enemy rook")
     @Override
     void canOnlyKillThreatToKing() {
+        setupKingForTests("f3", queen.colour);
+        board.setPiece("f6", new Rook(queen.colour.getOppositeColour()));   // Threat to king
+        state.setCheck(queen.colour, true);
 
+        assertThatResultMovesAreEqualExpected("c3",
+                "f6" // Kill the rook
+        );
     }
 
+    @Test
+    @DisplayName("Queen can only move to protect king from check")
     @Override
     void canOnlyProtectKingFromThreat() {
+        setupKingForTests("g3", queen.colour);
+        board.setPiece("c7", new Bishop(queen.colour.getOppositeColour()));   // Threat to king
+        state.setCheck(queen.colour, true);
 
+        assertThatResultMovesAreEqualExpected("b2",
+                "e5" // Hide king from rook path
+        );
     }
 }
