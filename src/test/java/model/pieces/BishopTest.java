@@ -5,7 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class BishopTest extends PieceTest {
-   private Bishop bishop = new Bishop(Colour.White);
+    private final Bishop bishop;
+
+    BishopTest() {
+        super(Colour.White);
+        bishop = new Bishop(ally);
+    }
 
     @Override
     Piece getTestedPiece() {
