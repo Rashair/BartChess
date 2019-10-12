@@ -32,8 +32,8 @@ class KnightTest extends PieceTest {
     @DisplayName("Knight cannot move because of threat from enemy bishop")
     @Override
     void cannotEndangerKing() {
-        setupKingForTests("a1", knight.colour);
-        board.setPiece("h8", new Bishop(knight.colour.getOppositeColour()));
+        setupKingForTests("a1", ally);
+        board.setPiece("h8", new Bishop(enemy));
 
         assertThatResultMovesAreEqualExpected("b2");
     }

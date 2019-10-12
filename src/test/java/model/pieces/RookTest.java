@@ -33,9 +33,9 @@ class RookTest extends PieceTest {
     @DisplayName("Enemy rook threatens king if ally rook moves vertically")
     @Override
     void cannotEndangerKing() {
-        setupKingForTests("a5", rook.colour);
+        setupKingForTests("a5", ally);
 
-        board.setPiece("h5", new Rook(rook.colour.getOppositeColour()));
+        board.setPiece("h5", new Rook(enemy));
 
         assertThatResultMovesAreEqualExpected("e5",
                 "b5", "c5", "d5", // left
