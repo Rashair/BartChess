@@ -20,6 +20,11 @@ class PawnTest extends PieceTest {
         );
     }
 
+    @Override
+    void cannotCrossChessboardBorders() {
+
+    }
+
     @Test
     @DisplayName("Pawn cannot move because of threat from enemy bishop")
     @Override
@@ -28,5 +33,15 @@ class PawnTest extends PieceTest {
         board.setPiece("f8", new Bishop(pawn.colour.getOppositeColour()));
 
         assertThatResultMovesAreEqualExpected("d6");
+    }
+
+    @Override
+    void canOnlyKillThreatToKing() {
+
+    }
+
+    @Override
+    void canOnlyProtectKingFromThreat() {
+
     }
 }

@@ -23,6 +23,11 @@ class BishopTest extends PieceTest {
         );
     }
 
+    @Override
+    void cannotCrossChessboardBorders() {
+
+    }
+
     @Test
     @DisplayName("Bishop cannot move on anti-diagonal because of threat from enemy queen")
     @Override
@@ -34,5 +39,15 @@ class BishopTest extends PieceTest {
                 "f4",                   // diagonal bottom-left
                 "d6", "c7", "b8"        // diagonal top-left
         );
+    }
+
+    @Override
+    void canOnlyKillThreatToKing() {
+
+    }
+
+    @Override
+    void canOnlyProtectKingFromThreat() {
+
     }
 }

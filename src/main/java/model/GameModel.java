@@ -31,4 +31,8 @@ public class GameModel {
     public Board getBoard() {
         return board;
     }
+
+    public GameState getState() {
+        return state;
+    }
 }

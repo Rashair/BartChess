@@ -4,6 +4,7 @@ public enum Colour {
     White(false),
     Black(true);
 
+    private static final int numberOfColours = 2;
     private boolean value;
 
     Colour(boolean value) {
@@ -23,7 +24,7 @@ public enum Colour {
     }
 
     public static int getNumberOfColours() {
-        return 2;
+        return numberOfColours;
     }
 
     public static Colour fromBoolean(boolean b) {

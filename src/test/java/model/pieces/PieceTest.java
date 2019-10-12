@@ -1,6 +1,7 @@
 package model.pieces;
 
 import model.Colour;
+import model.GameState;
 import model.GameTest;
 import model.grid.Board;
 import model.grid.Move;
@@ -11,6 +12,7 @@ import java.util.List;
 
 abstract class PieceTest extends GameTest {
     Board board = model.getBoard();
+    GameState state = model.getState();
 
     abstract Piece getTestedPiece();
 
@@ -18,7 +20,16 @@ abstract class PieceTest extends GameTest {
     abstract void allValidPositions();
 
     @Test
+    abstract void cannotCrossChessboardBorders();
+
+    @Test
     abstract void cannotEndangerKing();
+
+    @Test
+    abstract void canOnlyKillThreatToKing();
+
+    @Test
+    abstract void canOnlyProtectKingFromThreat();
 
     @BeforeEach
     void setUp() {

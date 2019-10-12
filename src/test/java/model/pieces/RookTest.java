@@ -24,6 +24,11 @@ class RookTest extends PieceTest {
         );
     }
 
+    @Override
+    void cannotCrossChessboardBorders() {
+
+    }
+
     @Test
     @DisplayName("Enemy rook threatens king if ally rook moves vertically")
     @Override
@@ -36,5 +41,15 @@ class RookTest extends PieceTest {
                 "b5", "c5", "d5", // left
                 "f5", "g5", "h5"  // right
         );
+    }
+
+    @Override
+    void canOnlyKillThreatToKing() {
+
+    }
+
+    @Override
+    void canOnlyProtectKingFromThreat() {
+
     }
 }

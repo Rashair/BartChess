@@ -23,6 +23,11 @@ class KnightTest extends PieceTest {
         );
     }
 
+    @Override
+    void cannotCrossChessboardBorders() {
+
+    }
+
     @Test
     @DisplayName("Knight cannot move because of threat from enemy bishop")
     @Override
@@ -31,5 +36,15 @@ class KnightTest extends PieceTest {
         board.setPiece("h8", new Bishop(knight.colour.getOppositeColour()));
 
         assertThatResultMovesAreEqualExpected("b2");
+    }
+
+    @Override
+    void canOnlyKillThreatToKing() {
+
+    }
+
+    @Override
+    void canOnlyProtectKingFromThreat() {
+
     }
 }

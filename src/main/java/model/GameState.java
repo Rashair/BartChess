@@ -2,9 +2,9 @@ package model;
 
 public class GameState {
     private final boolean[] isInCheck;
+    private static final int size = Colour.getNumberOfColours();
 
     public GameState() {
-        int size = Colour.getNumberOfColours();
         isInCheck = new boolean[size];
     }
 

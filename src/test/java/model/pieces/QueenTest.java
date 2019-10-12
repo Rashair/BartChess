@@ -28,6 +28,11 @@ class QueenTest extends PieceTest {
         );
     }
 
+    @Override
+    void cannotCrossChessboardBorders() {
+
+    }
+
     @Test
     @DisplayName("Queen cannot move from anti-diagonal")
     @Override
@@ -38,5 +43,15 @@ class QueenTest extends PieceTest {
         assertThatResultMovesAreEqualExpected("e5",
                 "f6", "g7" // diagonal top-right
         );
+    }
+
+    @Override
+    void canOnlyKillThreatToKing() {
+
+    }
+
+    @Override
+    void canOnlyProtectKingFromThreat() {
+
     }
 }
