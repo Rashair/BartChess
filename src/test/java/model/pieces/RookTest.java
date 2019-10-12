@@ -21,16 +21,21 @@ class RookTest extends PieceTest {
     @Override
     void allValidPositions() {
         assertThatResultMovesAreEqualExpected("e5",
-                "e6", "e7", "e8",       // top
-                "f5", "g5", "h5",       // right
-                "e4", "e3", "e2", "e1", // bottom
-                "a5", "b5", "c5", "d5"  // left
+                "e6", "e7", "e8",       // Top
+                "f5", "g5", "h5",       // Right
+                "e4", "e3", "e2", "e1", // Bottom
+                "a5", "b5", "c5", "d5"  // Left
         );
     }
 
+    @Test
+    @DisplayName("Rook in left-upper corner")
     @Override
     void cannotCrossChessboardBorders() {
-
+        assertThatResultMovesAreEqualExpected("a8",
+                "b8", "c8", "d8", "e8", "f8", "g8", "h8",    // Right
+                "a7", "a6", "a5", "a4", "a3", "a2", "a1"     // Bottom
+        );
     }
 
     @Test
@@ -42,18 +47,34 @@ class RookTest extends PieceTest {
         board.setPiece("h5", new Rook(enemy));
 
         assertThatResultMovesAreEqualExpected("e5",
-                "b5", "c5", "d5", // left
-                "f5", "g5", "h5"  // right
+                "b5", "c5", "d5", // Left
+                "f5", "g5", "h5"  // Right
         );
     }
 
+    @Test
+    @DisplayName("Rook can only kill enemy pawn")
     @Override
     void canOnlyKillThreatToKing() {
+        setupKingForTests("e4", ally);
+        board.setPiece("f5", new Pawn(enemy)); // Threat to king
+        state.setCheck(ally, true);
 
+        assertThatResultMovesAreEqualExpected("f1",
+                "f5" // Kill the pawn
+        );
     }
 
+    @Test
+    @DisplayName("Rook can only move to hide king from queen attack range")
     @Override
     void canOnlyProtectKingFromThreat() {
+        setupKingForTests("a5", ally);
+        board.setPiece("d8", new Queen(enemy)); // Threat to king
+        state.setCheck(ally, true);
 
+        assertThatResultMovesAreEqualExpected("h6",
+                "b6" // Hide king from queen attack range
+        );
     }
 }
