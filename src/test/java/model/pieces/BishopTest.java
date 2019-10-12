@@ -32,8 +32,8 @@ class BishopTest extends PieceTest {
     @DisplayName("Bishop cannot move on anti-diagonal because of threat from enemy queen")
     @Override
     void cannotEndangerKing() {
-        setupKingForTests("g3", bishop.colour);
-        board.setPiece("b8", new Queen(bishop.colour.getOppositeColour()));
+        setupKingForTests("g3", ally);
+        board.setPiece("b8", new Queen(enemy));
 
         assertThatResultMovesAreEqualExpected("e5",
                 "f4",                   // diagonal bottom-left

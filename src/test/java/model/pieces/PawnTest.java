@@ -29,8 +29,8 @@ class PawnTest extends PieceTest {
     @DisplayName("Pawn cannot move because of threat from enemy bishop")
     @Override
     void cannotEndangerKing() {
-        setupKingForTests("b4", pawn.colour);
-        board.setPiece("f8", new Bishop(pawn.colour.getOppositeColour()));
+        setupKingForTests("b4", ally);
+        board.setPiece("f8", new Bishop(enemy));
 
         assertThatResultMovesAreEqualExpected("d6");
     }

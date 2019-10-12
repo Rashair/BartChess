@@ -13,6 +13,9 @@ import java.util.List;
 abstract class PieceTest extends GameTest {
     Board board = model.getBoard();
     GameState state = model.getState();
+    Colour ally = getTestedPiece().colour;
+    Colour enemy = ally.getOppositeColour();
+    // TODO: Add methods to return colour and oppositeColour for testedPiece.
 
     abstract Piece getTestedPiece();
 
