@@ -18,7 +18,6 @@ public class ClassicJudge implements IJudge {
         this.state = state;
     }
 
-
     // TODO : Castling logic
     @Override
     public List<Move> getValidMoves(King king, int x, int y) {
@@ -35,15 +34,7 @@ public class ClassicJudge implements IJudge {
 
         return resultMoves;
     }
-
-
-    /*       ?
-     *       K
-     *       x
-     *       x
-     *       R
-     * R - Rook, K - King, x - squares attacked by Rook
-     */
+    
     private boolean isKingAttackedAfterOwnPieceMove(Move move) {
         var source = move.getSource();
         var destination = move.getDestination();
@@ -99,34 +90,46 @@ public class ClassicJudge implements IJudge {
                     }
                 }
             }
-        }
-        else if (source.x == kingPosition.x) {
+            if (!isKingAttacked) {
+                Set<Square> kingSquares = new HashSet<>() {{
+                    add(new Square(kingPosition.x + 1, kingPosition.y - 1));
+                    add(new Square(kingPosition.x + 1, kingPosition.y));
+                    add(new Square(kingPosition.x + 1, kingPosition.y + 1));
+                    add(new Square(kingPosition.x, kingPosition.y + 1));
+                    add(new Square(kingPosition.x, kingPosition.y - 1));
+                    add(new Square(kingPosition.x - 1, kingPosition.y + 1));
+                    add(new Square(kingPosition.x - 1, kingPosition.y));
+                    add(new Square(kingPosition.x - 1, kingPosition.y - 1));
+                }};
+
+                kingSquares.removeIf(Board::isOutOfBoardPosition);
+                kingSquares.removeIf(square -> {
+                    var piece = board.getPiece(square);
+                    return piece == null || !isKingAttackedFromPiece(kingColour, piece, King.class);
+                });
+
+                isKingAttacked = kingSquares.size() > 0;
+            }
+        } else if (source.x == kingPosition.x) {
             if (source.y < kingPosition.y) {
                 isKingAttacked = isKingAttackedFromLeft(kingColour, kingPosition);
-            }
-            else { // source.y > kingPosition.y
+            } else { // source.y > kingPosition.y
                 isKingAttacked = isKingAttackedFromRight(kingColour, kingPosition);
             }
-        }
-        else if (source.x < kingPosition.x) {
+        } else if (source.x < kingPosition.x) {
             if (source.y == kingPosition.y) {
                 isKingAttacked = isKingAttackedFromBottom(kingColour, kingPosition);
-            }
-            else if (source.y < kingPosition.y) {
+            } else if (source.y < kingPosition.y) {
                 isKingAttacked = isKingAttackedFromBottomLeft(kingColour, kingPosition);
-            }
-            else { // source.y > kingPosition.y
+            } else { // source.y > kingPosition.y
                 isKingAttacked = isKingAttackedFromBottomRight(kingColour, kingPosition);
             }
-        }
-        else { // source.x > kingPosition.x
+        } else { // source.x > kingPosition.x
             if (source.y == kingPosition.y) {
                 isKingAttacked = isKingAttackedFromTop(kingColour, kingPosition);
-            }
-            else if (source.y < kingPosition.y) {
+            } else if (source.y < kingPosition.y) {
                 isKingAttacked = isKingAttackedFromUpperLeft(kingColour, kingPosition);
-            }
-            else { // source.y > kingPosition.y
+            } else { // source.y > kingPosition.y
                 isKingAttacked = isKingAttackedFromUpperRight(kingColour, kingPosition);
             }
         }
@@ -305,8 +308,7 @@ public class ClassicJudge implements IJudge {
 
             if (board.isNotAnEmptySquare(x + 1, y + 1))
                 possiblePositions.add(new Square(x + 1, y + 1));
-        }
-        else {
+        } else {
             possiblePositions.add(new Square(x - 1, y));
             if (x == 6)  // Not moved yet
                 possiblePositions.add(new Square(x - 2, y));
