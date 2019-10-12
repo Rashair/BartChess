@@ -73,7 +73,7 @@ class BishopTest extends PieceTest {
         state.setCheck(ally, true);
 
         assertThatResultMovesAreEqualExpected("e3",
-                "c5"
+                "c5" // Hide king from bishop attack range
         );
     }
 }

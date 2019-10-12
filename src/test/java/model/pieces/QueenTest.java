@@ -69,7 +69,7 @@ class QueenTest extends PieceTest {
     }
 
     @Test
-    @DisplayName("Queen can only move to protect king from check")
+    @DisplayName("Queen can only move to hide king from rook path")
     @Override
     void canOnlyProtectKingFromThreat() {
         setupKingForTests("g3", ally);
