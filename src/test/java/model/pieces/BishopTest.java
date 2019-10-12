@@ -21,16 +21,20 @@ class BishopTest extends PieceTest {
     @Override
     void allValidPositions() {
         assertThatResultMovesAreEqualExpected("d4",
-                "e5", "f6", "g7", "h8", // diagonal top-right
-                "e3", "f2", "g1",       // diagonal bottom-right
-                "c3", "b2", "a1",       // diagonal bottom-left
-                "c5", "b6", "a7"        // diagonal top-left
+                "e5", "f6", "g7", "h8", // Diagonal top-right
+                "e3", "f2", "g1",       // Diagonal bottom-right
+                "c3", "b2", "a1",       // Diagonal bottom-left
+                "c5", "b6", "a7"        // Diagonal top-left
         );
     }
 
+    @Test
+    @DisplayName("Bishop in left-lower corner")
     @Override
     void cannotCrossChessboardBorders() {
-
+        assertThatResultMovesAreEqualExpected("a1",
+                "b2", "c3", "d4", "e5", "f6", "g7", "h8" // Diagonal top-right
+        );
     }
 
     @Test
@@ -41,18 +45,35 @@ class BishopTest extends PieceTest {
         board.setPiece("b8", new Queen(enemy));
 
         assertThatResultMovesAreEqualExpected("e5",
-                "f4",                   // diagonal bottom-left
-                "d6", "c7", "b8"        // diagonal top-left
+                "f4",                   // Diagonal bottom-left
+                "d6", "c7", "b8"        // Diagonal top-left
         );
     }
 
+    @Test
+    @DisplayName("Bishop can only move to kill enemy knight")
     @Override
     void canOnlyKillThreatToKing() {
+        setupKingForTests("b2", ally);
+        board.setPiece("c4", new Knight(enemy));
+        state.setCheck(ally, true);
 
+        assertThatResultMovesAreEqualExpected("f1",
+                "c4" // Kill the knight
+        );
     }
 
+
+    @Test
+    @DisplayName("Queen can only move to hide king from bishop attack range")
     @Override
     void canOnlyProtectKingFromThreat() {
+        setupKingForTests("b4", ally);
+        board.setPiece("f8", new Bishop(enemy));
+        state.setCheck(ally, true);
 
+        assertThatResultMovesAreEqualExpected("e3",
+                "c5"
+        );
     }
 }
