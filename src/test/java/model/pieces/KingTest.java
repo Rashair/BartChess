@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class KingTest extends PieceTest {
     private final King king;
 
-    KingTest(){
+    KingTest() {
         super(Colour.White);
         king = new King(ally);
     }

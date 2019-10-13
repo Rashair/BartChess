@@ -69,7 +69,7 @@ class QueenTest extends PieceTest {
     }
 
     @Test
-    @DisplayName("Queen can only move to hide king from rook path")
+    @DisplayName("Queen can only move to hide king from rook attack range")
     @Override
     void canOnlyProtectKingFromThreat() {
         setupKingForTests("g3", ally);
@@ -77,7 +77,7 @@ class QueenTest extends PieceTest {
         state.setCheck(ally, true);
 
         assertThatResultMovesAreEqualExpected("b2",
-                "e5" // Hide king from rook path
+                "e5" // Hide king from rook attack range
         );
     }
 }

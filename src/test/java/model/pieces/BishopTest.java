@@ -65,7 +65,7 @@ class BishopTest extends PieceTest {
 
 
     @Test
-    @DisplayName("Queen can only move to hide king from bishop attack range")
+    @DisplayName("Bishop can only move to hide king from enemy bishop attack range")
     @Override
     void canOnlyProtectKingFromThreat() {
         setupKingForTests("b4", ally);

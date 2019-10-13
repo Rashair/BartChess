@@ -16,7 +16,7 @@ abstract class PieceTest extends GameTest {
     final Colour ally;
     final Colour enemy;
 
-    public PieceTest(Colour ally){
+    public PieceTest(Colour ally) {
         this.board = model.getBoard();
         this.state = model.getState();
         this.ally = ally;
@@ -58,7 +58,7 @@ abstract class PieceTest extends GameTest {
         assertResultListMatchesExpected(result, expected);
     }
 
-    void setupKingForTests(String pos, Colour kingColour){
+    void setupKingForTests(String pos, Colour kingColour) {
         board.setPiece(pos, new King(kingColour));
         board.movePiece(pos, pos); // For board kingPosition tracking
     }
