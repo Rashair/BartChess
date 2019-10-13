@@ -124,7 +124,7 @@ class CheckValidator {
         moveSimulator.reverseMove();
         return true;
     }
-    
+
     private boolean isKingAttackedFromDirection(Square kingPosition, Direction dir) {
         switch (dir) {
             case Left:

@@ -8,6 +8,7 @@ import model.grid.Move;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 abstract class PieceTest extends GameTest {
@@ -54,7 +55,7 @@ abstract class PieceTest extends GameTest {
         board.setPiece(source, piece);
         List<Move> result = getMovesFromPosition(source, piece);
 
-        List<Move> expected = Move.createMovesFromSource(source, expectedPossibleMoves);
+        List<Move> expected = new ArrayList<>(Move.createMovesFromSource(source, expectedPossibleMoves));
         assertResultListMatchesExpected(result, expected);
     }
 

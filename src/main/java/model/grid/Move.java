@@ -1,8 +1,6 @@
 package model.grid;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Move implements Comparable<Move> {
     private final Square source;
@@ -47,9 +45,9 @@ public class Move implements Comparable<Move> {
         return "[" + source.toString() + ", " + destination.toString() + "]";
     }
 
-    public static List<Move> createMovesFromSource(String source, String... destinations) {
+    public static Set<Move> createMovesFromSource(String source, String... destinations) {
         Square sourceSquare = Board.parsePosition(source);
-        List<Move> moves = new ArrayList<>(destinations.length);
+        Set<Move> moves = new HashSet<>(destinations.length);
         for (String dest : destinations) {
             moves.add(new Move(sourceSquare, Board.parsePosition(dest)));
         }
@@ -57,8 +55,8 @@ public class Move implements Comparable<Move> {
         return moves;
     }
 
-    public static List<Move> createMovesFromSource(Square source, Square[] destinations) {
-        List<Move> moves = new ArrayList<>(destinations.length);
+    public static Set<Move> createMovesFromSource(Square source, Set<Square> destinations) {
+        Set<Move> moves = new HashSet<>(destinations.size());
         for (Square dest : destinations) {
             moves.add(new Move(source, dest));
         }

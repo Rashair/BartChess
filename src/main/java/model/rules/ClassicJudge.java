@@ -31,10 +31,10 @@ public class ClassicJudge implements IJudge {
 
         removeStandardInvalidPositions(possiblePositions, king.colour);
 
-        var resultMoves = Move.createMovesFromSource(new Square(x, y), possiblePositions.toArray(Square[]::new));
-        resultMoves.removeIf(checkValidator::isKingAttackedAfterMove);
+        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
+        result.removeIf(checkValidator::isKingAttackedAfterMove);
 
-        return resultMoves;
+        return new ArrayList<>(result);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ClassicJudge implements IJudge {
 
         result.removeIf(checkValidator::isKingAttackedAfterMove);
 
-        return result;
+        return new ArrayList<>(result);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ClassicJudge implements IJudge {
 
         result.removeIf(checkValidator::isKingAttackedAfterMove);
 
-        return result;
+        return new ArrayList<>(result);
     }
 
     // TODO : Castling logic
@@ -66,7 +66,7 @@ public class ClassicJudge implements IJudge {
 
         result.removeIf(checkValidator::isKingAttackedAfterMove);
 
-        return result;
+        return new ArrayList<>(result);
     }
 
     @Override
@@ -80,10 +80,10 @@ public class ClassicJudge implements IJudge {
 
         removeStandardInvalidPositions(possiblePositions, knight.colour);
 
-        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions.toArray(Square[]::new));
+        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterMove);
 
-        return result;
+        return new ArrayList<>(result);
     }
 
     // TODO: En passant logic
@@ -114,10 +114,10 @@ public class ClassicJudge implements IJudge {
 
         removeStandardInvalidPositions(possiblePositions, pawn.colour);
 
-        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions.toArray(Square[]::new));
+        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterMove);
 
-        return result;
+        return new ArrayList<>(result);
     }
 
     private void removeStandardInvalidPositions(Set<Square> positions, Colour colour) {

@@ -4,7 +4,9 @@ import model.Colour;
 import model.grid.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 class MovesMaker {
     private final Board board;
@@ -12,7 +14,7 @@ class MovesMaker {
     private final int x;
     private final int y;
 
-    private List<Square> currentPositions;
+    private Set<Square> currentPositions;
 
     MovesMaker(Board board, Colour pieceColour, int x, int y) {
         this.board = board;
@@ -22,8 +24,8 @@ class MovesMaker {
     }
 
 
-    List<Move> getVerticalAndHorizontalMoves() {
-        currentPositions = new ArrayList<>(Board.rowsNum + Board.columnsNum);
+    Set<Move> getVerticalAndHorizontalMoves() {
+        setupCurrentPositions();
         for (int i = x + 1; i < Board.rowsNum; ++i) {
             if (addPositionAndCheckIfShouldStop(i, y))
                 break;
@@ -44,11 +46,11 @@ class MovesMaker {
                 break;
         }
 
-        return Move.createMovesFromSource(new Square(x, y), currentPositions.toArray(Square[]::new));
+        return Move.createMovesFromSource(new Square(x, y), currentPositions);
     }
 
-    List<Move> getDiagonalMoves() {
-        currentPositions = new ArrayList<>(Board.rowsNum + Board.columnsNum);
+    Set<Move> getDiagonalMoves() {
+        setupCurrentPositions();
         for (int i = x + 1, j = y - 1; i < Board.rowsNum && j >= 0; ++i, --j) {
             if (addPositionAndCheckIfShouldStop(i, j))
                 break;
@@ -69,7 +71,12 @@ class MovesMaker {
                 break;
         }
 
-        return Move.createMovesFromSource(new Square(x, y), currentPositions.toArray(Square[]::new));
+        return Move.createMovesFromSource(new Square(x, y), currentPositions);
+    }
+
+
+    private void setupCurrentPositions(){
+        currentPositions = new HashSet<>(Board.rowsNum + Board.columnsNum);
     }
 
     private boolean addPositionAndCheckIfShouldStop(int i, int j) {
