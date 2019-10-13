@@ -1,8 +1,8 @@
 package model.pieces;
 
 import model.Colour;
-import model.rules.IJudge;
 import model.grid.Move;
+import model.rules.IJudge;
 
 import java.util.List;
 

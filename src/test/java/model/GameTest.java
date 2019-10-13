@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class GameTest {
     protected final static GameModel model = new GameModel();
 
-    public GameTest() { }
+    protected GameTest() { }
 
 
     protected static <T> void assertResultListMatchesExpected(List<T> result, List<T> expected) {

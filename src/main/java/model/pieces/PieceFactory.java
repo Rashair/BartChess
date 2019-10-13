@@ -7,7 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 public class PieceFactory {
     private static PieceFactory factory;
 
-    private PieceFactory() {}
+    private PieceFactory() {
+    }
 
     public static PieceFactory getInstance() {
         if (factory == null) {

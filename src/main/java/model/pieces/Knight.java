@@ -6,7 +6,7 @@ import model.rules.IJudge;
 
 import java.util.List;
 
-public class Knight extends Piece{
+public class Knight extends Piece {
     Knight(Colour colour) {
         super(colour);
     }

@@ -1,8 +1,8 @@
 package model.pieces;
 
 import model.Colour;
-import model.rules.IJudge;
 import model.grid.Move;
+import model.rules.IJudge;
 
 import java.util.List;
 
@@ -13,6 +13,6 @@ public class Bishop extends Piece {
 
     @Override
     public List<Move> getValidMoves(IJudge judge, int x, int y) {
-        return judge.getValidMoves(this, x , y);
+        return judge.getValidMoves(this, x, y);
     }
 }
