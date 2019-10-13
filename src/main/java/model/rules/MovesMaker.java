@@ -1,11 +1,11 @@
 package model.rules;
 
 import model.Colour;
-import model.grid.*;
+import model.grid.Board;
+import model.grid.Move;
+import model.grid.Square;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 class MovesMaker {
@@ -75,7 +75,7 @@ class MovesMaker {
     }
 
 
-    private void setupCurrentPositions(){
+    private void setupCurrentPositions() {
         currentPositions = new HashSet<>(Board.rowsNum + Board.columnsNum);
     }
 

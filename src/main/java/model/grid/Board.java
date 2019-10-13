@@ -1,7 +1,10 @@
 package model.grid;
 
 import model.Colour;
-import model.pieces.*;
+import model.pieces.King;
+import model.pieces.Pawn;
+import model.pieces.Piece;
+import model.pieces.PieceFactory;
 
 public class Board {
     public static final int rowsNum = 8;
@@ -36,17 +39,17 @@ public class Board {
         }
     }
 
-    public void movePiece(Square from, Square to){
+    public void movePiece(Square from, Square to) {
         var piece = getPiece(from);
-        setPiece(from,null);
+        setPiece(from, null);
         setPiece(to, piece);
 
-        if(piece instanceof King){
+        if (piece instanceof King) {
             kingPosition[piece.colour.getIntValue()] = to;
         }
     }
 
-    public void movePiece(Move move){
+    public void movePiece(Move move) {
         movePiece(move.getSource(), move.getDestination());
     }
 
@@ -82,7 +85,7 @@ public class Board {
         return !isOutOfBoardPosition(x, y) && getPiece(x, y) != null;
     }
 
-    public Square getKingPosition(Colour colour){
+    public Square getKingPosition(Colour colour) {
         return kingPosition[colour.getIntValue()];
     }
 

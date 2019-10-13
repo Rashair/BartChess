@@ -2,7 +2,9 @@ package model.rules;
 
 import model.Colour;
 import model.GameState;
-import model.grid.*;
+import model.grid.Board;
+import model.grid.Move;
+import model.grid.Square;
 import model.pieces.*;
 
 import java.util.HashSet;
@@ -93,27 +95,31 @@ class CheckValidator {
             if (kingSquares.size() > 0)
                 return reverseMoveAndReturnTrue();
 
-        } else if (source.x == kingPosition.x) {
-            if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Left)) {
+        }
+        else if (source.x == kingPosition.x) {
+            if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Left))
                 return reverseMoveAndReturnTrue();
-            } else if (isKingAttackedFromDirection(kingPosition, Direction.Right))
+            else if (isKingAttackedFromDirection(kingPosition, Direction.Right))
                 return reverseMoveAndReturnTrue();
-        } else if (source.x < kingPosition.x) {
-            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Bottom)) {
+        }
+        else if (source.x < kingPosition.x) {
+            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Bottom))
                 return reverseMoveAndReturnTrue();
-            } else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.LowerLeft)) {
+            else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.LowerLeft))
                 return reverseMoveAndReturnTrue();
-            } else if (isKingAttackedFromDirection(kingPosition, Direction.LowerRight)) { // source.y > kingPosition.y
+            else if (isKingAttackedFromDirection(kingPosition, Direction.LowerRight)) // source.y > kingPosition.y
                 return reverseMoveAndReturnTrue();
-            }
-        } else { // source.x > kingPosition.x
-            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Top)) {
+        }
+        else { // source.x > kingPosition.x
+            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Top))
                 return reverseMoveAndReturnTrue();
-            } else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.UpperLeft)) {
+
+            else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.UpperLeft))
                 return reverseMoveAndReturnTrue();
-            } else if (isKingAttackedFromDirection(kingPosition, Direction.UpperRight)) { // source.y > kingPosition.y
+
+            else if (isKingAttackedFromDirection(kingPosition, Direction.UpperRight))  // source.y > kingPosition.y
                 return reverseMoveAndReturnTrue();
-            }
+
         }
 
         moveSimulator.reverseMove();

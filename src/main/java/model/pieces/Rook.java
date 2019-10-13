@@ -6,7 +6,7 @@ import model.rules.IJudge;
 
 import java.util.List;
 
-public class Rook  extends Piece{
+public class Rook extends Piece {
 
     Rook(Colour colour) {
         super(colour);
@@ -14,6 +14,6 @@ public class Rook  extends Piece{
 
     @Override
     public List<Move> getValidMoves(IJudge judge, int x, int y) {
-        return judge.getValidMoves(this, x , y);
+        return judge.getValidMoves(this, x, y);
     }
 }

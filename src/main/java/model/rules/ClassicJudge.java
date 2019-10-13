@@ -2,11 +2,12 @@ package model.rules;
 
 import model.Colour;
 import model.GameState;
-import model.grid.*;
+import model.grid.Board;
+import model.grid.Move;
+import model.grid.Square;
 import model.pieces.*;
 
 import java.util.*;
-import java.util.List;
 
 
 public class ClassicJudge implements IJudge {
@@ -100,7 +101,8 @@ public class ClassicJudge implements IJudge {
 
             if (board.isNotAnEmptySquare(x + 1, y + 1))
                 possiblePositions.add(new Square(x + 1, y + 1));
-        } else {
+        }
+        else {
             possiblePositions.add(new Square(x - 1, y));
             if (x == 6)  // Not moved yet
                 possiblePositions.add(new Square(x - 2, y));
