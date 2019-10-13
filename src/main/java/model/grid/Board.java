@@ -10,10 +10,10 @@ public class Board {
     public static final int rowsNum = 8;
     public static final int columnsNum = 8;
 
-    private PieceFactory factory;
-    private Piece[][] pieces;
+    private final PieceFactory factory;
+    private final Piece[][] pieces;
 
-    private Square[] kingPosition = new Square[Colour.getNumberOfColours()];
+    private final Square[] kingPosition = new Square[Colour.getNumberOfColours()];
 
     public Board(PieceFactory factory) {
         this.factory = factory;

@@ -5,7 +5,7 @@ public enum Colour {
     Black(true);
 
     private static final int numberOfColours = 2;
-    private boolean value;
+    private final boolean value;
 
     Colour(boolean value) {
         this.value = value;

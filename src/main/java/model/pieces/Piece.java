@@ -16,7 +16,7 @@ public abstract class Piece {
         isAlive = true;
     }
 
-    public abstract List<Move> getValidMoves(IJudge judge, int x, int y);
+    protected abstract List<Move> getValidMoves(IJudge judge, int x, int y);
 
     public List<Move> getValidMoves(IJudge judge, String from) {
         var p = Board.parsePosition(from);

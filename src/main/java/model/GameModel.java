@@ -6,11 +6,11 @@ import model.rules.ClassicJudge;
 import model.rules.IJudge;
 
 public class GameModel {
-    private GameLogic logic;
-    private GameState state;
-    private PieceFactory factory;
-    private IJudge judge;
-    private Board board;
+    private final GameLogic logic;
+    private final GameState state;
+    private final PieceFactory factory;
+    private final IJudge judge;
+    private final Board board;
 
     public GameModel() {
         factory = PieceFactory.getInstance();

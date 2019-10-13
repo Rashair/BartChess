@@ -126,6 +126,7 @@ class CheckValidator {
         return false;
     }
 
+    @SuppressWarnings("SameReturnValue")
     private boolean reverseMoveAndReturnTrue() {
         moveSimulator.reverseMove();
         return true;

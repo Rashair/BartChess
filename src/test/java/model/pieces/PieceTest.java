@@ -17,7 +17,7 @@ abstract class PieceTest extends GameTest {
     final Colour ally;
     final Colour enemy;
 
-    public PieceTest(Colour ally) {
+    PieceTest(Colour ally) {
         this.board = model.getBoard();
         this.state = model.getState();
         this.ally = ally;
