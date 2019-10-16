@@ -1,7 +1,7 @@
 package model.rules;
 
 import model.Colour;
-import model.GameState;
+import model.game.State;
 import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
@@ -12,10 +12,10 @@ import java.util.*;
 
 public class ClassicJudge implements IJudge {
     private final Board board;
-    private final GameState state;
+    private final State state;
     private final CheckValidator checkValidator;
 
-    public ClassicJudge(Board board, GameState state) {
+    public ClassicJudge(Board board, State state) {
         this.board = board;
         this.state = state;
         this.checkValidator = new CheckValidator(board, state);
@@ -33,7 +33,7 @@ public class ClassicJudge implements IJudge {
         removeStandardInvalidPositions(possiblePositions, king.colour);
 
         var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
-        result.removeIf(checkValidator::isKingAttackedAfterMove);
+        result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
     }
@@ -44,7 +44,7 @@ public class ClassicJudge implements IJudge {
         var result = movesMaker.getVerticalAndHorizontalMoves();
         result.addAll(movesMaker.getDiagonalMoves());
 
-        result.removeIf(checkValidator::isKingAttackedAfterMove);
+        result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
     }
@@ -54,7 +54,7 @@ public class ClassicJudge implements IJudge {
         var movesMaker = new MovesMaker(board, rook.colour, x, y);
         var result = movesMaker.getVerticalAndHorizontalMoves();
 
-        result.removeIf(checkValidator::isKingAttackedAfterMove);
+        result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
     }
@@ -65,7 +65,7 @@ public class ClassicJudge implements IJudge {
         var movesMaker = new MovesMaker(board, bishop.colour, x, y);
         var result = movesMaker.getDiagonalMoves();
 
-        result.removeIf(checkValidator::isKingAttackedAfterMove);
+        result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
     }
@@ -82,7 +82,7 @@ public class ClassicJudge implements IJudge {
         removeStandardInvalidPositions(possiblePositions, knight.colour);
 
         var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
-        result.removeIf(checkValidator::isKingAttackedAfterMove);
+        result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
     }
@@ -117,7 +117,7 @@ public class ClassicJudge implements IJudge {
         removeStandardInvalidPositions(possiblePositions, pawn.colour);
 
         var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
-        result.removeIf(checkValidator::isKingAttackedAfterMove);
+        result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
     }
@@ -130,6 +130,26 @@ public class ClassicJudge implements IJudge {
     private boolean isSameColourPiece(Colour colour, Square position) {
         var piece = board.getPiece(position);
         return piece != null && piece.colour == colour;
+    }
+
+    @Override
+    public boolean isKingInCheck(Colour kingColour) {
+        return checkValidator.isKingInCheck(kingColour);
+    }
+
+    @Override
+    public boolean areAnyValidMovesForPlayer(Colour playerColour) {
+        for (int i = 0; i < Board.rowsNum; ++i) {
+            for (int j = 0; j < Board.columnsNum; ++j) {
+                var piece = board.getPiece(i, j);
+                if (piece != null && piece.colour == playerColour &&
+                        !piece.getValidMoves(this, i, j).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
 

@@ -1,5 +1,6 @@
 package model.rules;
 
+import model.Colour;
 import model.grid.Move;
 import model.pieces.*;
 
@@ -17,4 +18,8 @@ public interface IJudge {
     List<Move> getValidMoves(Knight knight, int x, int y);
 
     List<Move> getValidMoves(Pawn pawn, int x, int y);
+
+    boolean isKingInCheck(Colour kingColour);
+
+    boolean areAnyValidMovesForPlayer(Colour playerColour);
 }

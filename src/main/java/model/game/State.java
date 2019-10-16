@@ -1,10 +1,12 @@
-package model;
+package model.game;
 
-public class GameState {
+import model.Colour;
+
+public class State {
     private final boolean[] isInCheck;
     private static final int size = Colour.getNumberOfColours();
 
-    public GameState() {
+    public State() {
         isInCheck = new boolean[size];
     }
 

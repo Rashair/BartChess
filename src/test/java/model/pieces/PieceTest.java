@@ -1,8 +1,8 @@
 package model.pieces;
 
 import model.Colour;
-import model.GameState;
 import model.GameTest;
+import model.game.State;
 import model.grid.Board;
 import model.grid.Move;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ import java.util.List;
 
 abstract class PieceTest extends GameTest {
     final Board board;
-    final GameState state;
+    final State state;
     final Colour ally;
     final Colour enemy;
 

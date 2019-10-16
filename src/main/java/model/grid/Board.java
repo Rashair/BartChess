@@ -15,6 +15,7 @@ public class Board {
 
     private final Square[] kingPosition = new Square[Colour.getNumberOfColours()];
 
+    // TODO: Add all pieces to board
     public Board(PieceFactory factory) {
         this.factory = factory;
         pieces = new Piece[rowsNum][columnsNum];

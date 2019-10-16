@@ -1,7 +1,7 @@
 package model.rules;
 
 import model.Colour;
-import model.GameState;
+import model.game.State;
 import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
@@ -12,11 +12,11 @@ import java.util.Set;
 
 class CheckValidator {
     private final Board board;
-    private final GameState state;
+    private final State state;
     private final MoveSimulator moveSimulator;
     private Colour kingColour;
 
-    CheckValidator(Board board, GameState state) {
+    CheckValidator(Board board, State state) {
         this.board = board;
         this.state = state;
         this.moveSimulator = new MoveSimulator(board);
@@ -28,71 +28,18 @@ class CheckValidator {
         kingColour = board.getPiece(move.getSource()).colour;
     }
 
-    boolean isKingAttackedAfterMove(Move move, Colour kingColour) {
-        this.kingColour = kingColour;
+    boolean isKingAttackedAfterAllyMove(Move move) {
+        setKingColour(move);
         moveSimulator.setMove(move);
         moveSimulator.makeMove();
 
         var source = move.getSource();
         var kingPosition = board.getKingPosition(kingColour);
         if (kingPosition == move.getDestination() ||
-                state.isInCheck(kingColour) ||
-                kingColour != board.getPiece(source).colour) {
-            for (Direction dir : Direction.values()) {
-                if (isKingAttackedFromDirection(kingPosition, dir)) {
-                    return reverseMoveAndReturnTrue();
-                }
-            }
-
-            Set<Square> knightSquares = new HashSet<>() {{
-                add(new Square(kingPosition.x + 2, kingPosition.y - 1));
-                add(new Square(kingPosition.x + 2, kingPosition.y + 1));
-                add(new Square(kingPosition.x - 2, kingPosition.y - 1));
-                add(new Square(kingPosition.x - 2, kingPosition.y + 1));
-                add(new Square(kingPosition.x + 1, kingPosition.y - 2));
-                add(new Square(kingPosition.x - 1, kingPosition.y - 2));
-                add(new Square(kingPosition.x + 1, kingPosition.y + 2));
-                add(new Square(kingPosition.x - 1, kingPosition.y + 2));
-            }};
-            knightSquares.removeIf(Board::isOutOfBoardPosition);
-            knightSquares.removeIf(square -> {
-                var piece = board.getPiece(square);
-                return piece == null || !isKingAttackedFromPiece(piece, Knight.class);
-            });
-            if (knightSquares.size() > 0)
+                state.isInCheck(kingColour)) {
+            if (isKingInCheck(kingColour)) {
                 return reverseMoveAndReturnTrue();
-
-            var rowToAdd = kingColour == Colour.White ? 1 : -1;
-            Square[] pawnSquares = {new Square(kingPosition.x + rowToAdd, kingPosition.y - 1),
-                    new Square(kingPosition.x + rowToAdd, kingPosition.y + 1)};
-
-            for (int i = 0; i < 2; ++i) {
-                if (!Board.isOutOfBoardPosition(pawnSquares[i])) {
-                    var piece = board.getPiece(pawnSquares[i]);
-                    if ((piece != null && isKingAttackedFromPiece(piece, Pawn.class)))
-                        return reverseMoveAndReturnTrue();
-                }
             }
-
-            Set<Square> kingSquares = new HashSet<>() {{
-                add(new Square(kingPosition.x + 1, kingPosition.y - 1));
-                add(new Square(kingPosition.x + 1, kingPosition.y));
-                add(new Square(kingPosition.x + 1, kingPosition.y + 1));
-                add(new Square(kingPosition.x, kingPosition.y + 1));
-                add(new Square(kingPosition.x, kingPosition.y - 1));
-                add(new Square(kingPosition.x - 1, kingPosition.y + 1));
-                add(new Square(kingPosition.x - 1, kingPosition.y));
-                add(new Square(kingPosition.x - 1, kingPosition.y - 1));
-            }};
-
-            kingSquares.removeIf(Board::isOutOfBoardPosition);
-            kingSquares.removeIf(square -> {
-                var piece = board.getPiece(square);
-                return piece == null || !isKingAttackedFromPiece(piece, King.class);
-            });
-
-            if (kingSquares.size() > 0)
-                return reverseMoveAndReturnTrue();
         }
         else if (source.x == kingPosition.x) {
             if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Left))
@@ -123,9 +70,62 @@ class CheckValidator {
         return false;
     }
 
-    boolean isKingAttackedAfterMove(Move move) {
-        var pieceColour = board.getPiece(move.getSource()).colour;
-        return isKingAttackedAfterMove(move, pieceColour);
+    boolean isKingInCheck(Colour kingColour) {
+        var kingPosition = board.getKingPosition(kingColour);
+        for (Direction dir : Direction.values()) {
+            if (isKingAttackedFromDirection(kingPosition, dir)) {
+                return true;
+            }
+        }
+
+        Set<Square> knightSquares = new HashSet<>() {{
+            add(new Square(kingPosition.x + 2, kingPosition.y - 1));
+            add(new Square(kingPosition.x + 2, kingPosition.y + 1));
+            add(new Square(kingPosition.x - 2, kingPosition.y - 1));
+            add(new Square(kingPosition.x - 2, kingPosition.y + 1));
+            add(new Square(kingPosition.x + 1, kingPosition.y - 2));
+            add(new Square(kingPosition.x - 1, kingPosition.y - 2));
+            add(new Square(kingPosition.x + 1, kingPosition.y + 2));
+            add(new Square(kingPosition.x - 1, kingPosition.y + 2));
+        }};
+        knightSquares.removeIf(Board::isOutOfBoardPosition);
+        knightSquares.removeIf(square -> {
+            var piece = board.getPiece(square);
+            return piece == null || !isKingAttackedFromPiece(piece, Knight.class);
+        });
+        if (knightSquares.size() > 0)
+            return true;
+
+        var rowToAdd = kingColour == Colour.White ? 1 : -1;
+        Square[] pawnSquares = {new Square(kingPosition.x + rowToAdd, kingPosition.y - 1),
+                new Square(kingPosition.x + rowToAdd, kingPosition.y + 1)};
+
+        for (int i = 0; i < 2; ++i) {
+            if (!Board.isOutOfBoardPosition(pawnSquares[i])) {
+                var piece = board.getPiece(pawnSquares[i]);
+                if ((piece != null && isKingAttackedFromPiece(piece, Pawn.class)))
+                    return true;
+            }
+        }
+
+        Set<Square> kingSquares = new HashSet<>() {{
+            add(new Square(kingPosition.x + 1, kingPosition.y - 1));
+            add(new Square(kingPosition.x + 1, kingPosition.y));
+            add(new Square(kingPosition.x + 1, kingPosition.y + 1));
+            add(new Square(kingPosition.x, kingPosition.y + 1));
+            add(new Square(kingPosition.x, kingPosition.y - 1));
+            add(new Square(kingPosition.x - 1, kingPosition.y + 1));
+            add(new Square(kingPosition.x - 1, kingPosition.y));
+            add(new Square(kingPosition.x - 1, kingPosition.y - 1));
+        }};
+
+        kingSquares.removeIf(Board::isOutOfBoardPosition);
+        kingSquares.removeIf(square -> {
+            var piece = board.getPiece(square);
+            return piece == null || !isKingAttackedFromPiece(piece, King.class);
+        });
+
+        return kingSquares.size() > 0;
     }
 
     @SuppressWarnings("SameReturnValue")

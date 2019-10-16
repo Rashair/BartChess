@@ -1,6 +1,23 @@
 package model.players;
 
-public abstract class Player {
-    public abstract void chooseMove();
+import model.Colour;
+import model.grid.Move;
+import model.grid.Square;
 
+import java.util.List;
+
+public abstract class Player {
+    private Colour colour;
+
+    public Player(Colour colour) {
+        this.colour = colour;
+    }
+
+    public Colour getColour() {
+        return colour;
+    }
+
+    public abstract Square chooseSourceSquare();
+
+    public abstract Move chooseMove(List<Move> validMoves);
 }

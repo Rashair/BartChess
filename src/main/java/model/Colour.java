@@ -1,5 +1,7 @@
 package model;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public enum Colour {
     White(false),
     Black(true);
@@ -29,5 +31,14 @@ public enum Colour {
 
     public static Colour fromBoolean(boolean b) {
         return b ? Black : White;
+    }
+
+    public static Colour fromInt(int i) {
+        return i == 1 ? fromBoolean(true) : fromBoolean(false);
+    }
+
+    public static Colour getRandomColour() {
+        var randomValue = ThreadLocalRandom.current().nextInt(0, numberOfColours);
+        return fromInt(randomValue);
     }
 }
