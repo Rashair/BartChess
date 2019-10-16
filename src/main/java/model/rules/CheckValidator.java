@@ -28,14 +28,16 @@ class CheckValidator {
         kingColour = board.getPiece(move.getSource()).colour;
     }
 
-    boolean isKingAttackedAfterMove(Move move) {
-        setKingColour(move);
+    boolean isKingAttackedAfterMove(Move move, Colour kingColour) {
+        this.kingColour = kingColour;
         moveSimulator.setMove(move);
         moveSimulator.makeMove();
 
         var source = move.getSource();
         var kingPosition = board.getKingPosition(kingColour);
-        if (kingPosition == move.getDestination() || state.isInCheck(kingColour)) {
+        if (kingPosition == move.getDestination() ||
+                state.isInCheck(kingColour) ||
+                kingColour != board.getPiece(source).colour) {
             for (Direction dir : Direction.values()) {
                 if (isKingAttackedFromDirection(kingPosition, dir)) {
                     return reverseMoveAndReturnTrue();
@@ -57,10 +59,8 @@ class CheckValidator {
                 var piece = board.getPiece(square);
                 return piece == null || !isKingAttackedFromPiece(piece, Knight.class);
             });
-
             if (knightSquares.size() > 0)
                 return reverseMoveAndReturnTrue();
-
 
             var rowToAdd = kingColour == Colour.White ? 1 : -1;
             Square[] pawnSquares = {new Square(kingPosition.x + rowToAdd, kingPosition.y - 1),
@@ -72,7 +72,6 @@ class CheckValidator {
                     if ((piece != null && isKingAttackedFromPiece(piece, Pawn.class)))
                         return reverseMoveAndReturnTrue();
                 }
-
             }
 
             Set<Square> kingSquares = new HashSet<>() {{
@@ -94,7 +93,6 @@ class CheckValidator {
 
             if (kingSquares.size() > 0)
                 return reverseMoveAndReturnTrue();
-
         }
         else if (source.x == kingPosition.x) {
             if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Left))
@@ -119,11 +117,15 @@ class CheckValidator {
 
             else if (isKingAttackedFromDirection(kingPosition, Direction.UpperRight))  // source.y > kingPosition.y
                 return reverseMoveAndReturnTrue();
-
         }
 
         moveSimulator.reverseMove();
         return false;
+    }
+
+    boolean isKingAttackedAfterMove(Move move) {
+        var pieceColour = board.getPiece(move.getSource()).colour;
+        return isKingAttackedAfterMove(move, pieceColour);
     }
 
     @SuppressWarnings("SameReturnValue")
