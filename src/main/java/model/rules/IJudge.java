@@ -3,8 +3,10 @@ package model.rules;
 import model.Colour;
 import model.grid.Move;
 import model.pieces.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IJudge {
     List<Move> getValidMoves(King king, int x, int y);
@@ -22,4 +24,6 @@ public interface IJudge {
     boolean isKingInCheck(Colour kingColour);
 
     boolean areAnyValidMovesForPlayer(Colour playerColour);
+
+    Map<Pair<Class<? extends Piece>, Colour>, String> getInitialPositionsForAllPieces();
 }

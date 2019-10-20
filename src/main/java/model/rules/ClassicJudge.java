@@ -6,6 +6,7 @@ import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
 import model.pieces.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -15,6 +16,7 @@ public class ClassicJudge implements IJudge {
     private final State state;
     private final CheckValidator checkValidator;
 
+    // TODO : Add a cache storing current valid moves for every existing piece for performance improvement
     public ClassicJudge(Board board, State state) {
         this.board = board;
         this.state = state;
@@ -40,7 +42,7 @@ public class ClassicJudge implements IJudge {
 
     @Override
     public List<Move> getValidMoves(Queen queen, int x, int y) {
-        var movesMaker = new MovesMaker(board, queen.colour, x, y);
+        var movesMaker = new MovesCreator(board, queen.colour, x, y);
         var result = movesMaker.getVerticalAndHorizontalMoves();
         result.addAll(movesMaker.getDiagonalMoves());
 
@@ -51,7 +53,7 @@ public class ClassicJudge implements IJudge {
 
     @Override
     public List<Move> getValidMoves(Rook rook, int x, int y) {
-        var movesMaker = new MovesMaker(board, rook.colour, x, y);
+        var movesMaker = new MovesCreator(board, rook.colour, x, y);
         var result = movesMaker.getVerticalAndHorizontalMoves();
 
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
@@ -62,7 +64,7 @@ public class ClassicJudge implements IJudge {
     // TODO : Castling logic
     @Override
     public List<Move> getValidMoves(Bishop bishop, int x, int y) {
-        var movesMaker = new MovesMaker(board, bishop.colour, x, y);
+        var movesMaker = new MovesCreator(board, bishop.colour, x, y);
         var result = movesMaker.getDiagonalMoves();
 
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
@@ -150,6 +152,11 @@ public class ClassicJudge implements IJudge {
         }
 
         return false;
+    }
+
+    @Override
+    public Map<Pair<Class<? extends Piece>, Colour>, String> getInitialPositionsForAllPieces() {
+        return PiecesPositionInitializer.getInitialPositions();
     }
 }
 

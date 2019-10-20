@@ -19,7 +19,7 @@ public class PieceFactory {
         throw new SecurityException("You cannot create another instance of " + PieceFactory.class.getName());
     }
 
-    public <T extends Piece> Piece create(Class<T> tClass, Colour color) {
+    public Piece create(Class<? extends Piece> tClass, Colour color) {
         try {
             return tClass.getDeclaredConstructor(Colour.class).newInstance(color);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

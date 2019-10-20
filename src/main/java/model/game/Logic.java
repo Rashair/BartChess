@@ -4,6 +4,8 @@ import model.Colour;
 import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
+import model.pieces.Piece;
+import model.pieces.Queen;
 import model.rules.IJudge;
 
 import java.util.List;
@@ -13,6 +15,7 @@ public class Logic {
     private final Board board;
     private final IJudge judge;
     private final State state;
+
     private boolean isGameOver;
 
     public Logic(Board board, IJudge judge, State state) {
@@ -32,6 +35,13 @@ public class Logic {
         // If valid move was made then player cannot be in check anymore.
         if (state.isInCheck(playerColour)) {
             state.setCheck(playerColour, false);
+        }
+
+        if (move.isPromotionMove()) {
+            // TODO : Invoke event to ask player for new promoted piece
+            // Class = ...
+            Class<? extends Piece> promotedPiece = Queen.class;
+            board.promotePiece(move.getDestination(), promotedPiece);
         }
 
         var oppositePlayerColour = playerColour.getOppositeColour();

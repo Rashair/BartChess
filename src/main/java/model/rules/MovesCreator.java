@@ -8,7 +8,7 @@ import model.grid.Square;
 import java.util.HashSet;
 import java.util.Set;
 
-class MovesMaker {
+class MovesCreator {
     private final Board board;
     private final Colour pieceColour;
     private final int x;
@@ -16,7 +16,7 @@ class MovesMaker {
 
     private Set<Square> currentPositions;
 
-    MovesMaker(Board board, Colour pieceColour, int x, int y) {
+    MovesCreator(Board board, Colour pieceColour, int x, int y) {
         this.board = board;
         this.pieceColour = pieceColour;
         this.x = x;

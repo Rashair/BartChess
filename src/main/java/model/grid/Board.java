@@ -2,41 +2,35 @@ package model.grid;
 
 import model.Colour;
 import model.pieces.King;
-import model.pieces.Pawn;
 import model.pieces.Piece;
 import model.pieces.PieceFactory;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Map;
 
 public class Board {
     public static final int rowsNum = 8;
     public static final int columnsNum = 8;
 
-    private final PieceFactory factory;
+    private final PieceFactory pieceFactory;
     private final Piece[][] pieces;
-
     private final Square[] kingPosition = new Square[Colour.getNumberOfColours()];
 
-    // TODO: Add all pieces to board
-    public Board(PieceFactory factory) {
-        this.factory = factory;
+    public Board(PieceFactory pieceFactory) {
         pieces = new Piece[rowsNum][columnsNum];
-
-
-        setPiece("e1", factory.create(King.class, Colour.White));
-        kingPosition[Colour.White.getIntValue()] = parsePosition("e1");
-
-        setPiece("e8", factory.create(King.class, Colour.Black));
-        kingPosition[Colour.Black.getIntValue()] = parsePosition("e8");
-
-
-        setupPawns();
+        this.pieceFactory = pieceFactory;
     }
 
-    private void setupPawns() {
-        int secondRow = 1;
-        int penultimateRow = rowsNum - 2;
-        for (int colIt = 0; colIt < columnsNum; ++colIt) {
-            setPiece(secondRow, colIt, factory.create(Pawn.class, Colour.White));
-            setPiece(penultimateRow, colIt, factory.create(Pawn.class, Colour.Black));
+    public void initializePieces(Map<Pair<Class<? extends Piece>, Colour>, String> piecesToPositions) {
+        for (var entry : piecesToPositions.entrySet()) {
+            Square position = parsePosition(entry.getValue());
+            var classColourPair = entry.getKey();
+            Piece piece = pieceFactory.create(classColourPair.getLeft(), classColourPair.getRight());
+
+            pieces[position.x][position.y] = piece;
+            if (piece instanceof King) {
+                kingPosition[piece.colour.getIntValue()] = position;
+            }
         }
     }
 
@@ -80,6 +74,11 @@ public class Board {
 
     public Piece getPiece(String pos) {
         return getPiece(parsePosition(pos));
+    }
+
+    public void promotePiece(Square pos, Class<? extends Piece> updatedClass) {
+        var oldPiece = getPiece(pos);
+        setPiece(pos, pieceFactory.create(updatedClass, oldPiece.colour));
     }
 
     public boolean isNotAnEmptySquare(int x, int y) {

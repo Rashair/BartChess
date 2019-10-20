@@ -7,6 +7,7 @@ import java.util.Set;
 public class Move implements Comparable<Move> {
     private final Square source;
     private final Square destination;
+    private boolean isPromotionMove;
 
     public Move(Square source, Square destination) {
         this.source = source;
@@ -19,6 +20,14 @@ public class Move implements Comparable<Move> {
 
     public Square getDestination() {
         return destination;
+    }
+
+    public void setToPromotionMove() {
+        isPromotionMove = true;
+    }
+
+    public boolean isPromotionMove() {
+        return isPromotionMove;
     }
 
     @Override
