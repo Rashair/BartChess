@@ -41,7 +41,7 @@ public class GameModel {
         return state;
     }
 
-    public void StartGame() {
+    public void NewGame() {
         board.initializePieces(judge.getInitialPositionsForAllPieces());
         Colour randomColour = Colour.getRandomColour();
         var player1 = new Human(randomColour);

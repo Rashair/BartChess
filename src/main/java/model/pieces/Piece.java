@@ -26,4 +26,9 @@ public abstract class Piece {
     protected void kill() {
         isAlive = false;
     }
+
+    @Override
+    public String toString() {
+        return Character.toString(this.getClass().getSimpleName().charAt(0));
+    }
 }

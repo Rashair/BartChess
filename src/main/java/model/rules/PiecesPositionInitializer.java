@@ -1,22 +1,23 @@
 package model.rules;
 
 import model.Colour;
+import model.grid.Board;
 import model.pieces.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 class PiecesPositionInitializer {
-    private static Map<Pair<Class<? extends Piece>, Colour>, String> initialPositions;
+    private static List<Triple<Class<? extends Piece>, Colour, String>> initialPositions;
 
-    static Map<Pair<Class<? extends Piece>, Colour>, String> getInitialPositions() {
+    static List<Triple<Class<? extends Piece>, Colour, String>> getInitialPositions() {
         if (initialPositions != null) {
             return initialPositions;
         }
 
-        initialPositions = new HashMap<>();
+        initialPositions = new ArrayList<>(4 * Board.columnsNum);
         initializePawns();
         initializeKnights();
         initializeBishops();
@@ -28,57 +29,45 @@ class PiecesPositionInitializer {
     }
 
     private static void initializePawns() {
-        Pair<Class<? extends Piece>, Colour> whitePawn = new ImmutablePair<>(Pawn.class, Colour.White);
-        Pair<Class<? extends Piece>, Colour> blackPawn = new ImmutablePair<>(Pawn.class, Colour.Black);
         for (char y = 'a'; y <= 'h'; ++y) {
-            initialPositions.put(whitePawn, y + "2");
-            initialPositions.put(blackPawn, y + "7");
+            initialPositions.add(new ImmutableTriple<>(Pawn.class, Colour.White, y + "2"));
+            initialPositions.add(new ImmutableTriple<>(Pawn.class, Colour.Black, y + "7"));
         }
     }
 
     private static void initializeKnights() {
-        Pair<Class<? extends Piece>, Colour> whiteKnight = new ImmutablePair<>(Knight.class, Colour.White);
-        initialPositions.put(whiteKnight, "b1");
-        initialPositions.put(whiteKnight, "g1");
+        initialPositions.add(new ImmutableTriple<>(Knight.class, Colour.White, "b1"));
+        initialPositions.add(new ImmutableTriple<>(Knight.class, Colour.White, "g1"));
 
-        Pair<Class<? extends Piece>, Colour> blackKnight = new ImmutablePair<>(Knight.class, Colour.Black);
-        initialPositions.put(blackKnight, "b8");
-        initialPositions.put(blackKnight, "g8");
+        initialPositions.add(new ImmutableTriple<>(Knight.class, Colour.Black, "b8"));
+        initialPositions.add(new ImmutableTriple<>(Knight.class, Colour.Black, "g8"));
     }
 
     private static void initializeBishops() {
-        Pair<Class<? extends Piece>, Colour> whiteBishop = new ImmutablePair<>(Bishop.class, Colour.White);
-        initialPositions.put(whiteBishop, "c1");
-        initialPositions.put(whiteBishop, "f1");
+        initialPositions.add(new ImmutableTriple<>(Bishop.class, Colour.White, "c1"));
+        initialPositions.add(new ImmutableTriple<>(Bishop.class, Colour.White, "f1"));
 
-        Pair<Class<? extends Piece>, Colour> blackBishop = new ImmutablePair<>(Bishop.class, Colour.Black);
-        initialPositions.put(blackBishop, "c8");
-        initialPositions.put(blackBishop, "f8");
+        initialPositions.add(new ImmutableTriple<>(Bishop.class, Colour.Black, "c8"));
+        initialPositions.add(new ImmutableTriple<>(Bishop.class, Colour.Black, "f8"));
     }
 
     private static void initializeRooks() {
-        Pair<Class<? extends Piece>, Colour> whiteRook = new ImmutablePair<>(Rook.class, Colour.White);
-        initialPositions.put(whiteRook, "a1");
-        initialPositions.put(whiteRook, "h1");
+        initialPositions.add(new ImmutableTriple<>(Rook.class, Colour.White, "a1"));
+        initialPositions.add(new ImmutableTriple<>(Rook.class, Colour.White, "h1"));
 
-        Pair<Class<? extends Piece>, Colour> blackRook = new ImmutablePair<>(Rook.class, Colour.Black);
-        initialPositions.put(blackRook, "a8");
-        initialPositions.put(blackRook, "h8");
+        initialPositions.add(new ImmutableTriple<>(Rook.class, Colour.Black, "a8"));
+        initialPositions.add(new ImmutableTriple<>(Rook.class, Colour.Black, "h8"));
     }
 
     private static void initializeQueens() {
-        Pair<Class<? extends Piece>, Colour> whiteQueen = new ImmutablePair<>(Queen.class, Colour.White);
-        initialPositions.put(whiteQueen, "d1");
+        initialPositions.add(new ImmutableTriple<>(Queen.class, Colour.White, "d1"));
 
-        Pair<Class<? extends Piece>, Colour> blackQueen = new ImmutablePair<>(Queen.class, Colour.Black);
-        initialPositions.put(blackQueen, "d8");
+        initialPositions.add(new ImmutableTriple<>(Queen.class, Colour.Black, "d8"));
     }
 
     private static void initializeKings() {
-        Pair<Class<? extends Piece>, Colour> whiteKing = new ImmutablePair<>(King.class, Colour.White);
-        initialPositions.put(whiteKing, "e1");
+        initialPositions.add(new ImmutableTriple<>(King.class, Colour.White, "e1"));
 
-        Pair<Class<? extends Piece>, Colour> blackKing = new ImmutablePair<>(King.class, Colour.Black);
-        initialPositions.put(blackKing, "e8");
+        initialPositions.add(new ImmutableTriple<>(King.class, Colour.Black, "e8"));
     }
 }

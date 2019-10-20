@@ -24,6 +24,11 @@ abstract class PieceTest extends GameTest {
         this.enemy = ally.getOppositeColour();
     }
 
+    @BeforeEach
+    void setUp() {
+        board.clearAllPieces();
+    }
+
     abstract Piece getTestedPiece();
 
     @Test
@@ -40,11 +45,6 @@ abstract class PieceTest extends GameTest {
 
     @Test
     abstract void canOnlyProtectKingFromThreat();
-
-    @BeforeEach
-    void setUp() {
-        board.clearAllPieces();
-    }
 
     List<Move> getMovesFromPosition(String pos, Piece piece) {
         return piece.getValidMoves(model.getJudge(), pos);

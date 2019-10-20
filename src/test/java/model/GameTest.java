@@ -9,11 +9,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class GameTest {
     protected final static GameModel model = new GameModel();
 
-    protected GameTest() { }
+    protected GameTest() {
+    }
 
 
     protected static <T> void assertResultListMatchesExpected(List<T> result, List<T> expected) {
-        assertThat("Different size than expected", result, hasSize(expected.size()));
-        assertTrue(result.containsAll(expected), "Does not contain all expected objects");
+        assertResultListMatchesExpected(result, expected, "");
+    }
+
+    protected static <T> void assertResultListMatchesExpected(List<T> result, List<T> expected, String message) {
+        assertThat("Different size than expected - " + message, result, hasSize(expected.size()));
+        assertTrue(result.containsAll(expected), "Does not contain all expected objects - " + message);
     }
 }

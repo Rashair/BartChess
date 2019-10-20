@@ -6,7 +6,7 @@ import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
 import model.pieces.*;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
 
@@ -155,7 +155,7 @@ public class ClassicJudge implements IJudge {
     }
 
     @Override
-    public Map<Pair<Class<? extends Piece>, Colour>, String> getInitialPositionsForAllPieces() {
+    public List<Triple<Class<? extends Piece>, Colour, String>> getInitialPositionsForAllPieces() {
         return PiecesPositionInitializer.getInitialPositions();
     }
 }

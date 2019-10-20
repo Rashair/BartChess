@@ -4,9 +4,9 @@ import model.Colour;
 import model.pieces.King;
 import model.pieces.Piece;
 import model.pieces.PieceFactory;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.Map;
+import java.util.List;
 
 public class Board {
     public static final int rowsNum = 8;
@@ -21,11 +21,10 @@ public class Board {
         this.pieceFactory = pieceFactory;
     }
 
-    public void initializePieces(Map<Pair<Class<? extends Piece>, Colour>, String> piecesToPositions) {
-        for (var entry : piecesToPositions.entrySet()) {
-            Square position = parsePosition(entry.getValue());
-            var classColourPair = entry.getKey();
-            Piece piece = pieceFactory.create(classColourPair.getLeft(), classColourPair.getRight());
+    public void initializePieces(List<Triple<Class<? extends Piece>, Colour, String>> piecesToPositions) {
+        for (var entry : piecesToPositions) {
+            Square position = parsePosition(entry.getRight());
+            Piece piece = pieceFactory.create(entry.getLeft(), entry.getMiddle());
 
             pieces[position.x][position.y] = piece;
             if (piece instanceof King) {
@@ -95,6 +94,25 @@ public class Board {
                 pieces[rowIt][colIt] = null;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < rowsNum; ++i) {
+            for (int j = 0; j < columnsNum; ++j) {
+                var piece = pieces[i][j];
+                if (piece != null) {
+                    builder.append(piece.toString());
+                }
+                else {
+                    builder.append(' ');
+                }
+            }
+            builder.append('\n');
+        }
+
+        return builder.toString();
     }
 
     /**
