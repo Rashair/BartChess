@@ -93,30 +93,27 @@ public class ClassicJudge implements IJudge {
     @Override
     public List<Move> getValidMoves(Pawn pawn, int x, int y) {
         Set<Square> possiblePositions = new HashSet<>();
-        if (pawn.colour == Colour.White) {
-            possiblePositions.add(new Square(x + 1, y));
-            if (x == 1)  // Not moved yet
-                possiblePositions.add(new Square(x + 2, y));
+        int sign = pawn.colour == Colour.White ? 1 : -1;
 
-            if (board.isNotAnEmptySquare(x + 1, y - 1))
-                possiblePositions.add(new Square(x + 1, y - 1));
+        Square forwardOne = new Square(x + sign, y);
+        if (board.isAnEmptySquare(forwardOne)) {
+            possiblePositions.add(forwardOne);
 
-            if (board.isNotAnEmptySquare(x + 1, y + 1))
-                possiblePositions.add(new Square(x + 1, y + 1));
-        }
-        else {
-            possiblePositions.add(new Square(x - 1, y));
-            if (x == 6)  // Not moved yet
-                possiblePositions.add(new Square(x - 2, y));
-
-            if (board.isNotAnEmptySquare(x - 1, y - 1))
-                possiblePositions.add(new Square(x - 1, y - 1));
-
-            if (board.isNotAnEmptySquare(x - 1, y + 1))
-                possiblePositions.add(new Square(x - 1, y + 1));
+            Square forwardTwo = new Square(x + 2 * sign, y);
+            int firstRow = pawn.colour == Colour.White ? 1 : 6;
+            if (x == firstRow && board.isAnEmptySquare(forwardTwo))
+                possiblePositions.add(forwardTwo);
         }
 
-        removeStandardInvalidPositions(possiblePositions, pawn.colour);
+        Square attackLeft = new Square(x + sign, y - 1);
+        var pieceOnLeft = board.getPiece(attackLeft);
+        if (pieceOnLeft != null && pieceOnLeft.colour != pawn.colour)
+            possiblePositions.add(attackLeft);
+
+        Square attackRight = new Square(x + sign, y + 1);
+        var pieceOnRight = board.getPiece(attackRight);
+        if (pieceOnRight != null && pieceOnRight.colour != pawn.colour)
+            possiblePositions.add(attackRight);
 
         var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);

@@ -64,11 +64,11 @@ public class Board {
     }
 
     public Piece getPiece(Square p) {
-        return pieces[p.x][p.y];
+        return getPiece(p.x, p.y);
     }
 
     public Piece getPiece(int x, int y) {
-        return pieces[x][y];
+        return isOutOfBoardPosition(x, y) ? null : pieces[x][y];
     }
 
     public Piece getPiece(String pos) {
@@ -80,8 +80,12 @@ public class Board {
         setPiece(pos, pieceFactory.create(updatedClass, oldPiece.colour));
     }
 
-    public boolean isNotAnEmptySquare(int x, int y) {
-        return !isOutOfBoardPosition(x, y) && getPiece(x, y) != null;
+    /**
+     * @param s - square
+     * @return If is position inside board and if this position is empty
+     */
+    public boolean isAnEmptySquare(Square s) {
+        return !isOutOfBoardPosition(s.x, s.y) && getPiece(s.x, s.y) == null;
     }
 
     public Square getKingPosition(Colour colour) {
@@ -99,14 +103,14 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < rowsNum; ++i) {
+        for (int i = rowsNum - 1; i >= 0; --i) {
             for (int j = 0; j < columnsNum; ++j) {
                 var piece = pieces[i][j];
                 if (piece != null) {
                     builder.append(piece.toString());
                 }
                 else {
-                    builder.append(' ');
+                    builder.append('.');
                 }
             }
             builder.append('\n');

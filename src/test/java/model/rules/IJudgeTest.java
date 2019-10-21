@@ -2,23 +2,18 @@ package model.rules;
 
 import model.Colour;
 import model.GameTest;
+import model.game.State;
 import model.grid.Board;
-import model.grid.Square;
-import model.pieces.Knight;
-import model.pieces.Pawn;
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class IJudgeTest extends GameTest {
     Board board = model.getBoard();
     IJudge judge = model.getJudge();
+    State state = model.getState();
 
 
     @BeforeEach
@@ -27,65 +22,72 @@ class IJudgeTest extends GameTest {
     }
 
     @Test
-    void areAnyValidMovesForPlayer() {
+    void noValidMovesOnCheckMate() {
+        // Arrange
+        // Fastest possible check
+        board.movePiece("f2", "f3"); // White pawn
+        board.movePiece("e7", "e5"); // Black pawn
+        board.movePiece("g2", "g4"); // White pawn
+        board.movePiece("d8", "h4"); // Black Queen - checkmate
 
+        var playerColour = Colour.White;
+        state.setCheck(playerColour, true);
+
+        // Act
+        boolean anyValidMovesForPlayer = judge.areAnyValidMovesForPlayer(playerColour);
+
+        // Assert
+        assertFalse(anyValidMovesForPlayer, "There should be no valid moves on checkmate for white player\n" + board.toString());
     }
 
     @Test
-    void getInitialPositionsForAllPieces() {
-        var knightsPositions = new Square[Colour.getNumberOfColours()][];
-        knightsPositions[Colour.White.getIntValue()] = new Square[]{Board.parsePosition("b1"), Board.parsePosition("g1")};
-        knightsPositions[Colour.Black.getIntValue()] = new Square[]{Board.parsePosition("b8"), Board.parsePosition("g8")};
+    void noValidMovesOnStaleMate() {
+        // Arrange
+        // Fastest possible stale mate : https://www.chess.com/forum/view/game-showcase/fastest-stalemate-known-in-chess
+        // 1 e3 a5
+        board.movePiece("e2", "e3"); // White pawn
+        board.movePiece("a7", "a5"); // Black pawn
 
-        var pawnRows = new int[Colour.getNumberOfColours()];
-        pawnRows[Colour.White.getIntValue()] = 1;
-        pawnRows[Colour.Black.getIntValue()] = 6;
+        // 2 Qh5 Ra6
+        board.movePiece("d1", "h5"); // White queen
+        board.movePiece("a8", "a6"); // Black rook
 
-        final int expectedMovesNumber = 2;
-        for (int x = 0; x < Board.rowsNum; ++x) {
-            for (int y = 0; y < Board.columnsNum; ++y) {
-                var piece = board.getPiece(x, y);
-                if (piece != null) {
-                    if (piece instanceof Knight) {
-                        var currentSquare = new Square(x, y);
-                        assertTrue(ArrayUtils.contains(knightsPositions[piece.colour.getIntValue()], currentSquare),
-                                "Knight position should be one of expected values");
+        // 3 Qxa5 h5
+        board.movePiece("h5", "a5"); // White queen
+        board.movePiece("h7", "h5"); // Black pawn
 
-                        var currentMoves = piece.getValidMoves(judge, x, y);
-                        assertEquals(expectedMovesNumber, currentMoves.size(), "Wrong number of moves");
+        // 4 h5 Rah4
+        board.movePiece("h2", "h4"); // White pawn
+        board.movePiece("a6", "h6"); // Black rook
 
-                        for (int i = 0; i < expectedMovesNumber; ++i) {
-                            Square destination = currentMoves.get(i).getDestination();
-                            assertEquals(2, Math.abs(destination.x - currentSquare.x),
-                                    "Rows of positions should differ exactly by 2");
-                            assertEquals(1, Math.abs(destination.y - currentSquare.y),
-                                    "Columns of positions should differ exactly by 1");
-                        }
-                    }
-                    else if (piece instanceof Pawn) {
-                        assertEquals(pawnRows[piece.colour.getIntValue()], x,
-                                "Pawn position row should be one of expected values");
+        // 5 Qxc7 f6
+        board.movePiece("a5", "c7"); // White queen
+        board.movePiece("f7", "f6"); // Black pawn
 
-                        var currentMoves = piece.getValidMoves(judge, x, y);
-                        assertEquals(expectedMovesNumber, currentMoves.size(), "Wrong number of moves");
+        // 6 Qxd7+ Kf7
+        board.movePiece("c7", "d7"); // White queen
+        board.movePiece("e8", "f7"); // Black king
 
-                        var currentSquare = new Square(x, y);
-                        for (int i = 0; i < expectedMovesNumber; ++i) {
-                            Square destination = currentMoves.get(i).getDestination();
+        // 7 Qxb7 Qd3
+        board.movePiece("d7", "b7"); // White queen
+        board.movePiece("d8", "d3"); // Black queen
 
-                            var rowsDiff = Math.abs(destination.x - currentSquare.x);
-                            assertTrue(rowsDiff > 0 && rowsDiff <= 2,
-                                    "Rows of positions should differ by 1 or 2");
-                            assertEquals(destination.y, currentSquare.y, "Columns should be equal");
-                        }
-                    }
-                    else {
-                        var result = piece.getValidMoves(judge, x, y);
-                        assertResultListMatchesExpected(result, new ArrayList<>(), "\n" + board.toString());
-                    }
-                }
-            }
-        }
+        // 8 Qxb8 Qh7
+        board.movePiece("b7", "b8"); // White queen
+        board.movePiece("d3", "h7"); // Black queen
+
+        // 9 Qxc8 Kg6
+        board.movePiece("b8", "c8"); // White queen
+        board.movePiece("f7", "g6"); // Black king
+
+        // 10 Qe6
+        board.movePiece("c8", "e6"); // White queen
+
+        // Act
+        boolean anyValidMovesForPlayer = judge.areAnyValidMovesForPlayer(Colour.Black);
+
+        // Assert
+        assertFalse(anyValidMovesForPlayer, "There should be no valid moves on stalemate for black player\n" + board.toString());
     }
 
     @AfterEach
