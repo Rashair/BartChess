@@ -1,6 +1,5 @@
 package model;
 
-import model.game.Interaction;
 import model.game.Logic;
 import model.game.State;
 import model.grid.Board;
@@ -46,6 +45,6 @@ public class GameModel {
         Colour randomColour = Colour.getRandomColour();
         var player1 = new Human(randomColour);
         var player2 = new Computer(randomColour.getOppositeColour());
-        var interaction = new Interaction(logic, player1, player2);
+        //var interaction = new Interaction(logic, player1, player2);
     }
 }
