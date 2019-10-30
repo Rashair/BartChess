@@ -110,7 +110,7 @@ public class Board {
                     builder.append(piece.toString());
                 }
                 else {
-                    builder.append('.');
+                    builder.append('\u2003');
                 }
             }
             builder.append('\n');

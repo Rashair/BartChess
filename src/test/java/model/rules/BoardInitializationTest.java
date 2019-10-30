@@ -62,8 +62,8 @@ class BoardInitializationTest extends GameTest {
 
     private void assertValidKnightMoves(int x, int y, Piece piece) {
         var currentSquare = new Square(x, y);
-        assertTrue(ArrayUtils.contains(knightsPositions, currentSquare),
-                "Knight position should be one of expected values");
+        assertTrue(ArrayUtils.contains(knightsPositions[piece.colour.getIntValue()], currentSquare),
+                "Knight position should be one of expected values: " + currentSquare.toString());
 
         var currentMoves = piece.getValidMoves(judge, x, y);
         assertEquals(expectedMovesNumber, currentMoves.size(), "Wrong number of moves");

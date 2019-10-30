@@ -39,12 +39,4 @@ public class GameModel {
     public State getState() {
         return state;
     }
-
-    public void NewGame() {
-        board.initializePieces(judge.getInitialPositionsForAllPieces());
-        Colour randomColour = Colour.getRandomColour();
-        var player1 = new Human(randomColour);
-        var player2 = new Computer(randomColour.getOppositeColour());
-        //var interaction = new Interaction(logic, player1, player2);
-    }
 }
