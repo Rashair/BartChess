@@ -1,0 +1,15 @@
+.squareEven {
+    -fx-background-color: white;
+}
+
+.squareOdd {
+    -fx-background-color: grey;
+}
+
+.squareEven:highlighted {
+    -fx-background-color: green;
+}
+
+.squareOdd:highlighted {
+    -fx-background-color: green;
+}

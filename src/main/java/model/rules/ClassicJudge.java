@@ -96,12 +96,12 @@ public class ClassicJudge implements IJudge {
         int sign = pawn.colour == Colour.White ? 1 : -1;
 
         Square forwardOne = new Square(x + sign, y);
-        if (board.isAnEmptySquare(forwardOne)) {
+        if (board.isEmptySquare(forwardOne)) {
             possiblePositions.add(forwardOne);
 
             Square forwardTwo = new Square(x + 2 * sign, y);
             int firstRow = pawn.colour == Colour.White ? 1 : 6;
-            if (x == firstRow && board.isAnEmptySquare(forwardTwo))
+            if (x == firstRow && board.isEmptySquare(forwardTwo))
                 possiblePositions.add(forwardTwo);
         }
 

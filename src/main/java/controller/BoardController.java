@@ -37,9 +37,12 @@ public class BoardController {
         //var interaction = new Interaction(logic, player1, player2);
     }
 
+    public boolean isEmptySquare(int row, int col) {
+        return board.isEmptySquare(row, col);
+    }
+
     public String getSquareDisplay(int row, int col) {
-        var piece = board.getPiece(row, col);
-        return piece != null ? piece.toString() : "";
+        return board.getPiece(row, col).toString();
     }
 
     public List<Square> getValidMoves(int row, int col) {

@@ -84,8 +84,12 @@ public class Board {
      * @param s - square
      * @return If is position inside board and if this position is empty
      */
-    public boolean isAnEmptySquare(Square s) {
-        return !isOutOfBoardPosition(s.x, s.y) && getPiece(s.x, s.y) == null;
+    public boolean isEmptySquare(Square s) {
+        return isEmptySquare(s.x, s.y);
+    }
+
+    public boolean isEmptySquare(int x, int y) {
+        return !isOutOfBoardPosition(x, y) && getPiece(x, y) == null;
     }
 
     public Square getKingPosition(Colour colour) {
