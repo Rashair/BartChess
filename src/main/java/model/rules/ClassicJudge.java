@@ -17,6 +17,7 @@ public class ClassicJudge implements IJudge {
     private final CheckValidator checkValidator;
 
     // TODO : Add a cache storing current valid moves for every existing piece for performance improvement
+    // TODO: Move validation when in check - there is a bug
     public ClassicJudge(Board board, State state) {
         this.board = board;
         this.state = state;

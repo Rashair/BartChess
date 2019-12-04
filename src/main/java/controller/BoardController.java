@@ -10,7 +10,6 @@ import model.players.Human;
 import model.rules.IJudge;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,10 +18,14 @@ public class BoardController {
     private final GameModel model;
     private final Board board;
 
+    private List<Move> currentlyConsideredMoves;
+    private Colour playerTurnColour;
+
     public BoardController(GameModel model) {
         this.model = model;
         this.board = model.getBoard();
         this.judge = model.getJudge();
+        this.playerTurnColour = Colour.White;
     }
 
     public void InitializeGame() {
@@ -33,7 +36,6 @@ public class BoardController {
     }
 
     public void NewGame() {
-
         //var interaction = new Interaction(logic, player1, player2);
     }
 
@@ -47,12 +49,31 @@ public class BoardController {
 
     public List<Square> getValidMoves(int row, int col) {
         var piece = board.getPiece(row, col);
-        if (piece != null) {
+        if (piece != null && piece.colour == playerTurnColour) {
             // TODO: Cache moves
-            List<Move> moves = piece.getValidMoves(judge, row, col);
-            return Arrays.stream(moves.toArray()).map(move -> ((Move) move).getDestination()).collect(Collectors.toList());
+            currentlyConsideredMoves = piece.getValidMoves(judge, row, col);
+            return currentlyConsideredMoves.stream().map(move -> ((Move) move).getDestination()).collect(Collectors.toList());
+        }
+        else {
+            currentlyConsideredMoves = null;
         }
 
         return new ArrayList<Square>();
+    }
+
+    public boolean movePiece(Square from, Square to) {
+        if (currentlyConsideredMoves != null) {
+            var validMove = currentlyConsideredMoves.stream().
+                    filter((Move move) -> move.getSource().equals(from) && move.getDestination().equals(to)).
+                    findFirst();
+            if (validMove.isPresent()) {
+                var move = validMove.get();
+                board.movePiece(validMove.get());
+                playerTurnColour = playerTurnColour.getOppositeColour();
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -20,7 +20,7 @@ public class BoardView {
 
     private final GridPane boardGrid;
     private final StackPane[][] panels;
-    private StackPane selectedPieceSquare;
+    private Square selectedPieceSquare;
     private List<Square> currentlyHighlighted;
     private final PseudoClass highlight;
 
@@ -29,8 +29,7 @@ public class BoardView {
 
         highlight = PseudoClass.getPseudoClass("highlighted");
         boardGrid = new GridPane();
-        var resource = this.getClass().getResource("board.css").toExternalForm();
-        boardGrid.getStylesheets().add(resource);
+        boardGrid.getStylesheets().add(this.getClass().getResource("board.css").toExternalForm());
         panels = new StackPane[Board.rowsNum][Board.columnsNum];
 
         Font font = new Font("Tahoma", 48);
@@ -39,11 +38,8 @@ public class BoardView {
                 StackPane squarePanel = new StackPane();
                 panels[row][col] = squarePanel;
                 String styleClass = (row + col) % 2 == 0 ? "squareEven" : "squareOdd";
-                squarePanel.getStylesheets().add(resource);
                 squarePanel.getStyleClass().add(styleClass);
 
-                var styles = squarePanel.getStylesheets();
-                var classes = squarePanel.getStyleClass();
                 // Different orientation - chessboard starts from 0 and goes up
                 int boardRow = Board.rowsNum - row - 1;
                 if (!controller.isEmptySquare(boardRow, col)) {
@@ -71,22 +67,28 @@ public class BoardView {
 
     void onSquareClicked(MouseEvent event, int row, int col) {
         System.out.println("Clicked " + row + " " + col);
-        boolean clickedEmptySquare = controller.isEmptySquare(row, col);
-        if (selectedPieceSquare != null && clickedEmptySquare) {
+
+        var clickedSquare = new Square(row, col);
+        if (selectedPieceSquare != null && currentlyHighlighted.contains(clickedSquare)) {
+            if(controller.movePiece(selectedPieceSquare, clickedSquare)) {
+                movePieceView(selectedPieceSquare, clickedSquare);
+            }
+
             selectedPieceSquare = null;
         }
-        else if (!clickedEmptySquare) {
-            selectedPieceSquare = panels[row][col];
-            List<Square> validSquares = controller.getValidMoves(row, col);
+        else if (!controller.isEmptySquare(row, col)) {
+            setHighlighting(false);
 
-            setHighlighting(false);
-            currentlyHighlighted = validSquares;
-            setHighlighting(true);
+            List<Square> validSquares = controller.getValidMoves(row, col);
+            if (validSquares.size() > 0) {
+                selectedPieceSquare = clickedSquare;
+                currentlyHighlighted = validSquares;
+                setHighlighting(true);
+            }
+            return;
         }
-        else if (currentlyHighlighted != null) {
-            setHighlighting(false);
-            currentlyHighlighted = null;
-        }
+
+        setHighlighting(false);
     }
 
     private void setHighlighting(boolean val) {
@@ -98,6 +100,18 @@ public class BoardView {
             var squareView = panels[square.x][square.y];
             squareView.pseudoClassStateChanged(highlight, val);
         }
+
+        if (!val) {
+            currentlyHighlighted = null;
+        }
+    }
+
+    private void movePieceView(Square from, Square to){
+        var prevView = panels[from.x][from.y];
+        var currView = panels[to.x][to.y];
+        currView.getChildren().clear();
+        currView.getChildren().addAll(prevView.getChildren());
+        prevView.getChildren().clear();
     }
 
     public GridPane getBoardGrid() {
