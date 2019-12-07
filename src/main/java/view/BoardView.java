@@ -1,6 +1,5 @@
 package view;
 
-
 import controller.BoardController;
 import javafx.css.PseudoClass;
 import javafx.geometry.HPos;
@@ -58,7 +57,7 @@ public class BoardView {
         }
 
         for (int i = 0; i < Board.rowsNum; i++) {
-            boardGrid.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
+            boardGrid.getRowConstraints().add(new RowConstraints(-5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
         }
         for (int i = 0; i < Board.columnsNum; ++i) {
             boardGrid.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
@@ -70,7 +69,7 @@ public class BoardView {
 
         var clickedSquare = new Square(row, col);
         if (selectedPieceSquare != null && currentlyHighlighted.contains(clickedSquare)) {
-            if(controller.movePiece(selectedPieceSquare, clickedSquare)) {
+            if (controller.movePiece(selectedPieceSquare, clickedSquare)) {
                 movePieceView(selectedPieceSquare, clickedSquare);
             }
 
@@ -106,7 +105,7 @@ public class BoardView {
         }
     }
 
-    private void movePieceView(Square from, Square to){
+    private void movePieceView(Square from, Square to) {
         var prevView = panels[from.x][from.y];
         var currView = panels[to.x][to.y];
         currView.getChildren().clear();

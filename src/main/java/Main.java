@@ -14,7 +14,7 @@ public class Main extends Application {
 
         var view = new BoardView(boardController);
 
-        stage.setScene(new Scene(view.getBoardGrid(), 800, 800));
+        stage.setScene(new Scene(view.getBoardGrid(), 900, 900));
         stage.setResizable(false);
         stage.show();
     }

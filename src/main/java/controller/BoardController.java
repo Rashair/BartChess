@@ -52,7 +52,7 @@ public class BoardController {
         if (piece != null && piece.colour == playerTurnColour) {
             // TODO: Cache moves
             currentlyConsideredMoves = piece.getValidMoves(judge, row, col);
-            return currentlyConsideredMoves.stream().map(move -> ((Move) move).getDestination()).collect(Collectors.toList());
+            return currentlyConsideredMoves.stream().map(move -> move.getDestination()).collect(Collectors.toList());
         }
         else {
             currentlyConsideredMoves = null;
