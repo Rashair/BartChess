@@ -12,6 +12,7 @@ public class Move implements Comparable<Move> {
     public Move(Square source, Square destination) {
         this.source = source;
         this.destination = destination;
+        isPromotionMove = false;
     }
 
     public Square getSource() {
@@ -23,6 +24,10 @@ public class Move implements Comparable<Move> {
     }
 
     public void setToPromotionMove() {
+        isPromotionMove = true;
+    }
+
+    public void setPromotionMove() {
         isPromotionMove = true;
     }
 

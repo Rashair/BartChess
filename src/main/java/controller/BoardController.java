@@ -3,19 +3,19 @@ package controller;
 import model.Colour;
 import model.GameModel;
 import model.game.Logic;
+import model.game.MoveTrace;
 import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
+import model.pieces.Piece;
 import model.players.Computer;
 import model.players.Human;
-import model.rules.IJudge;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BoardController {
-    private final GameModel model;
     private final Logic logic;
     private final Board board;
 
@@ -23,7 +23,6 @@ public class BoardController {
     private Colour playerTurnColour;
 
     public BoardController(GameModel model) {
-        this.model = model;
         this.board = model.getBoard();
         this.logic = model.getLogic();
         this.playerTurnColour = Colour.White;
@@ -51,7 +50,6 @@ public class BoardController {
     public List<Square> getValidMoves(int row, int col) {
         var piece = board.getPiece(row, col);
         if (piece != null && piece.colour == playerTurnColour) {
-            // TODO: Cache moves
             currentlyConsideredMoves = logic.getValidMoves(row, col);
             return currentlyConsideredMoves.stream().map(Move::getDestination).collect(Collectors.toList());
         }
@@ -62,19 +60,23 @@ public class BoardController {
         return new ArrayList<Square>();
     }
 
-    public boolean movePiece(Square from, Square to) {
+    public MoveTrace movePiece(Square from, Square to) {
         if (currentlyConsideredMoves != null) {
             var validMove = currentlyConsideredMoves.stream().
                     filter((Move move) -> move.getSource().equals(from) && move.getDestination().equals(to)).
                     findFirst();
             if (validMove.isPresent()) {
                 var move = validMove.get();
-                logic.makeMove(move, playerTurnColour);
+                var result = logic.makeMove(move, playerTurnColour);
                 playerTurnColour = playerTurnColour.getOppositeColour();
-                return true;
+                return result;
             }
         }
 
-        return false;
+        return new MoveTrace();
+    }
+
+    public void promotePiece(Square square, Class<? extends Piece> promoted) {
+        logic.promotePiece(square, promoted);
     }
 }

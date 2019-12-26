@@ -90,7 +90,7 @@ public class ClassicJudge implements IJudge {
         return new ArrayList<>(result);
     }
 
-    // TODO: En passant logic
+    // TODO: En passant logic + promotion
     @Override
     public List<Move> getValidMoves(Pawn pawn, int x, int y) {
         Set<Square> possiblePositions = new HashSet<>();
@@ -101,7 +101,7 @@ public class ClassicJudge implements IJudge {
             possiblePositions.add(forwardOne);
 
             Square forwardTwo = new Square(x + 2 * sign, y);
-            int firstRow = pawn.colour == Colour.White ? 1 : 6;
+            int firstRow = pawn.colour == Colour.White ? 1 : Board.rowsNum - 2;
             if (x == firstRow && board.isEmptySquare(forwardTwo))
                 possiblePositions.add(forwardTwo);
         }
@@ -118,6 +118,12 @@ public class ClassicJudge implements IJudge {
 
         var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
+
+        result.forEach(move -> {
+            var destX = move.getDestination().x;
+            if (destX == 0 || destX == Board.rowsNum - 1)
+                move.setPromotionMove();
+        });
 
         return new ArrayList<>(result);
     }

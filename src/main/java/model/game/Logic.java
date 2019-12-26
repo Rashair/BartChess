@@ -39,7 +39,7 @@ public class Logic {
                 new ArrayList<>();
     }
 
-    public void makeMove(Move move, Colour playerColour) {
+    public MoveTrace makeMove(Move move, Colour playerColour) {
         board.movePiece(move);
 
         // If valid move was made then player cannot be in check anymore.
@@ -47,21 +47,26 @@ public class Logic {
             state.setCheck(playerColour, false);
         }
 
-        if (move.isPromotionMove()) {
-            // TODO : Invoke event to ask player for new promoted piece
-            // Class = ...
-            Class<? extends Piece> promotedPiece = Queen.class;
-            board.promotePiece(move.getDestination(), promotedPiece);
-        }
-
         var oppositePlayerColour = playerColour.getOppositeColour();
         if (judge.isKingInCheck(oppositePlayerColour)) {
             state.setCheck(oppositePlayerColour, true);
         }
 
-        if (!judge.areAnyValidMovesForPlayer(playerColour.getOppositeColour())) {
+        var result = new MoveTrace(move);
+        if (!judge.areAnyValidMovesForPlayer(oppositePlayerColour)) {
             isGameOver = true;
+            Colour winner = null;
+            if (state.isInCheck(oppositePlayerColour))
+                winner = playerColour;
+
+            result.setGameOver(winner);
         }
+
+        return result;
+    }
+
+    public void promotePiece(Square square, Class<? extends Piece> promoted) {
+        board.promotePiece(square, promoted);
     }
 
     public boolean isGameOver() {
