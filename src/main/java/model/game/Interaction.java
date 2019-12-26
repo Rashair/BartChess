@@ -29,7 +29,7 @@ public class Interaction {
 
     private void makePlayerMove(Player player) {
         var square = player.chooseSourceSquare();
-        var validMoves = logic.getValidMovesForSquare(square);
+        var validMoves = logic.getValidMoves(square);
         var move = player.chooseMove(validMoves);
         if (move == null)
             return;

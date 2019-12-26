@@ -2,6 +2,7 @@ package controller;
 
 import model.Colour;
 import model.GameModel;
+import model.game.Logic;
 import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
@@ -14,8 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BoardController {
-    private final IJudge judge;
     private final GameModel model;
+    private final Logic logic;
     private final Board board;
 
     private List<Move> currentlyConsideredMoves;
@@ -24,12 +25,12 @@ public class BoardController {
     public BoardController(GameModel model) {
         this.model = model;
         this.board = model.getBoard();
-        this.judge = model.getJudge();
+        this.logic = model.getLogic();
         this.playerTurnColour = Colour.White;
     }
 
     public void InitializeGame() {
-        board.initializePieces(judge.getInitialPositionsForAllPieces());
+        logic.initializeBoard();
         Colour randomColour = Colour.getRandomColour();
         var player1 = new Human(randomColour);
         var player2 = new Computer(randomColour.getOppositeColour());
@@ -51,8 +52,8 @@ public class BoardController {
         var piece = board.getPiece(row, col);
         if (piece != null && piece.colour == playerTurnColour) {
             // TODO: Cache moves
-            currentlyConsideredMoves = piece.getValidMoves(judge, row, col);
-            return currentlyConsideredMoves.stream().map(move -> move.getDestination()).collect(Collectors.toList());
+            currentlyConsideredMoves = logic.getValidMoves(row, col);
+            return currentlyConsideredMoves.stream().map(Move::getDestination).collect(Collectors.toList());
         }
         else {
             currentlyConsideredMoves = null;
@@ -68,7 +69,7 @@ public class BoardController {
                     findFirst();
             if (validMove.isPresent()) {
                 var move = validMove.get();
-                board.movePiece(move);
+                logic.makeMove(move, playerTurnColour);
                 playerTurnColour = playerTurnColour.getOppositeColour();
                 return true;
             }
