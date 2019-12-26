@@ -68,7 +68,7 @@ public class BoardController {
                     findFirst();
             if (validMove.isPresent()) {
                 var move = validMove.get();
-                board.movePiece(validMove.get());
+                board.movePiece(move);
                 playerTurnColour = playerTurnColour.getOppositeColour();
                 return true;
             }

@@ -35,8 +35,7 @@ class CheckValidator {
 
         var source = move.getSource();
         var kingPosition = board.getKingPosition(kingColour);
-        if (kingPosition == move.getDestination() ||
-                state.isInCheck(kingColour)) {
+        if (kingPosition == move.getDestination() || state.isInCheck(kingColour)) {
             if (isKingInCheck(kingColour)) {
                 return reverseMoveAndReturnTrue();
             }

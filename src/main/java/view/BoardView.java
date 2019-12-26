@@ -4,10 +4,11 @@ import controller.BoardController;
 import javafx.css.PseudoClass;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.grid.Board;
@@ -35,21 +36,21 @@ public class BoardView {
         Font font = new Font("Tahoma", 48);
         for (int row = 0; row < Board.rowsNum; ++row) {
             for (int col = 0; col < Board.columnsNum; ++col) {
+                var viewRow = Board.rowsNum - row - 1;
+
                 StackPane squarePanel = new StackPane();
-                panels[row][col] = squarePanel;
+                panels[viewRow][col] = squarePanel;
                 String styleClass = (row + col) % 2 == 0 ? "squareEven" : "squareOdd";
                 squarePanel.getStyleClass().add(styleClass);
 
-                // Different orientation - chessboard starts from 0 and goes up
-                int boardRow = Board.rowsNum - row - 1;
-                if (!controller.isEmptySquare(boardRow, col)) {
-                    var pieceView = controller.getSquareDisplay(boardRow, col);
+                if (!controller.isEmptySquare(viewRow, col)) {
+                    var pieceView = controller.getSquareDisplay(viewRow, col);
                     Text text = new Text(pieceView);
                     text.setFont(font);
                     squarePanel.getChildren().add(text);
                 }
 
-                final int finalRow = row;
+                final int finalRow = viewRow;
                 final int finalCol = col;
                 squarePanel.setOnMouseClicked((MouseEvent event) -> onSquareClicked(event, finalRow, finalCol));
 
@@ -85,7 +86,7 @@ public class BoardView {
                 movePieceView(selectedPieceSquare, clickedSquare);
             }
 
-            selectedPieceSquare = null;
+            setHighlighting(false);
         }
         else if (!controller.isEmptySquare(row, col)) {
             setHighlighting(false);
@@ -96,10 +97,10 @@ public class BoardView {
                 currentlyHighlighted = validSquares;
                 setHighlighting(true);
             }
-            return;
         }
-
-        setHighlighting(false);
+        else {
+            setHighlighting(false);
+        }
     }
 
     private void setHighlighting(boolean val) {
@@ -114,6 +115,7 @@ public class BoardView {
 
         if (!val) {
             currentlyHighlighted = null;
+            selectedPieceSquare = null;
         }
     }
 
