@@ -1,15 +1,11 @@
 .squareEven {
-    -fx-background-color: white;
+    -fx-background-color: #fff6e4;
 }
 
 .squareOdd {
-    -fx-background-color: grey;
+    -fx-background-color: #805858;
 }
 
-.squareEven:highlighted {
-    -fx-background-color: green;
-}
-
-.squareOdd:highlighted {
-    -fx-background-color: green;
+.squareEven:highlighted, .squareOdd:highlighted {
+    -fx-effect: innershadow(gaussian, rgba(255, 255, 0, 0.5), 15, 0.8, 0, 0);
 }

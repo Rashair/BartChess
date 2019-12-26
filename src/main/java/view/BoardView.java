@@ -7,6 +7,7 @@ import javafx.geometry.VPos;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.grid.Board;
@@ -56,11 +57,22 @@ public class BoardView {
             }
         }
 
+        double percentRowSize = 100.0 / Board.rowsNum;
         for (int i = 0; i < Board.rowsNum; i++) {
-            boardGrid.getRowConstraints().add(new RowConstraints(-5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
+            var constraint = new RowConstraints();
+            constraint.setPercentHeight(percentRowSize);
+            constraint.setValignment(VPos.CENTER);
+            constraint.setFillHeight(true);
+            boardGrid.getRowConstraints().add(constraint);
         }
+
+        double percentColumnSize = 100.0 / Board.columnsNum;
         for (int i = 0; i < Board.columnsNum; ++i) {
-            boardGrid.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
+            var constraint = new ColumnConstraints();
+            constraint.setPercentWidth(percentColumnSize);
+            constraint.setHalignment(HPos.CENTER);
+            constraint.setFillWidth(true);
+            boardGrid.getColumnConstraints().add(constraint);
         }
     }
 
