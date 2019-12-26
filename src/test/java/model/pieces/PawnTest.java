@@ -20,6 +20,7 @@ class PawnTest extends PieceTest {
     @Test
     @Override
     void allValidPositions() {
+        setupKingForTests("a8", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("b7",
                 "b6", "b5" // First move
         );

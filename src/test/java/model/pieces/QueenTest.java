@@ -20,6 +20,7 @@ class QueenTest extends PieceTest {
     @Test
     @Override
     void allValidPositions() {
+        setupKingForTests("a8", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("e5",
                 "e6", "e7", "e8",       // Top
                 "f6", "g7", "h8",       // Diagonal top-right
@@ -36,6 +37,7 @@ class QueenTest extends PieceTest {
     @DisplayName("Queen in right-lower corner")
     @Override
     void cannotCrossChessboardBorders() {
+        setupKingForTests("b8", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("h1",
                 "h2", "h3", "h4", "h5", "h6", "h7", "h8",   // Top
                 "g1", "f1", "e1", "d1", "c1", "b1", "a1",   // Left

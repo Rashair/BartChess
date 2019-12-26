@@ -20,6 +20,7 @@ class KnightTest extends PieceTest {
     @Test
     @Override
     void allValidPositions() {
+        setupKingForTests("a8", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("f3",
                 "e5", "g5", // Top
                 "h2", "h4", // Right
@@ -32,6 +33,7 @@ class KnightTest extends PieceTest {
     @DisplayName("Knight at b8")
     @Override
     void cannotCrossChessboardBorders() {
+        setupKingForTests("a8", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("b8",
                 "d7",       // Right
                 "a6", "c6"  // Bottom

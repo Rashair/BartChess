@@ -13,10 +13,9 @@ public class PieceFactory {
     public static PieceFactory getInstance() {
         if (factory == null) {
             factory = new PieceFactory();
-            return factory;
         }
 
-        throw new SecurityException("You cannot create another instance of " + PieceFactory.class.getName());
+        return factory;
     }
 
     public Piece create(Class<? extends Piece> tClass, Colour color) {

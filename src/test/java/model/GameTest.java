@@ -7,9 +7,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class GameTest {
-    protected final static GameModel model = new GameModel();
+    protected final GameModel model;
 
     protected GameTest() {
+        model = new GameModel();
     }
 
 

@@ -20,6 +20,7 @@ class RookTest extends PieceTest {
     @Test
     @Override
     void allValidPositions() {
+        setupKingForTests("a8", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("e5",
                 "e6", "e7", "e8",       // Top
                 "f5", "g5", "h5",       // Right
@@ -32,6 +33,7 @@ class RookTest extends PieceTest {
     @DisplayName("Rook in left-upper corner")
     @Override
     void cannotCrossChessboardBorders() {
+        setupKingForTests("b1", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("a8",
                 "b8", "c8", "d8", "e8", "f8", "g8", "h8",    // Right
                 "a7", "a6", "a5", "a4", "a3", "a2", "a1"     // Bottom

@@ -21,7 +21,6 @@ class BoardInitializationTest extends GameTest {
 
     private Square[][] knightsPositions;
     private final int[] pawnRows;
-    private final int expectedMovesNumber = 2;
 
     BoardInitializationTest() {
         knightsPositions = new Square[Colour.getNumberOfColours()][];
@@ -61,6 +60,7 @@ class BoardInitializationTest extends GameTest {
     }
 
     private void assertValidKnightMoves(int x, int y, Piece piece) {
+        final int expectedMovesNumber = 2;
         var currentSquare = new Square(x, y);
         assertTrue(ArrayUtils.contains(knightsPositions[piece.colour.getIntValue()], currentSquare),
                 "Knight position should be one of expected values: " + currentSquare.toString());
@@ -79,6 +79,7 @@ class BoardInitializationTest extends GameTest {
 
 
     private void assertValidPawnMoves(int x, int y, Piece piece) {
+        final int expectedMovesNumber = 2;
         int pawnRow = pawnRows[piece.colour.getIntValue()];
         assertEquals(pawnRow, x, " Position row should be one of expected values");
 

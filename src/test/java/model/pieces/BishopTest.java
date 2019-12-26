@@ -20,6 +20,7 @@ class BishopTest extends PieceTest {
     @Test
     @Override
     void allValidPositions() {
+        setupKingForTests("d5", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("d4",
                 "e5", "f6", "g7", "h8", // Diagonal top-right
                 "e3", "f2", "g1",       // Diagonal bottom-right
@@ -32,6 +33,7 @@ class BishopTest extends PieceTest {
     @DisplayName("Bishop in left-lower corner")
     @Override
     void cannotCrossChessboardBorders() {
+        setupKingForTests("a8", ally); // non-meaningful position
         assertThatResultMovesAreEqualExpected("a1",
                 "b2", "c3", "d4", "e5", "f6", "g7", "h8" // Diagonal top-right
         );
