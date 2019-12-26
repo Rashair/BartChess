@@ -20,22 +20,21 @@ import java.util.List;
 public class BoardView {
     private final BoardController controller;
 
-    private final Font font;
+    private final PieceDisplayManager pieceDisplay;
+    private final HighlightManager highlight;
+
     private final GridPane boardGrid;
     private final StackPane[][] panels;
     private Square selectedPieceSquare;
-    private List<Square> currentlyHighlighted;
-    private final PseudoClass highlight;
 
     public BoardView(BoardController controller) {
         this.controller = controller;
-
-        highlight = PseudoClass.getPseudoClass("highlighted");
         boardGrid = new GridPane();
         boardGrid.getStylesheets().add(this.getClass().getResource("board.css").toExternalForm());
         panels = new StackPane[Board.rowsNum][Board.columnsNum];
 
-        font = new Font("Tahoma", 48);
+        var font = new Font("Tahoma", 48);
+        pieceDisplay = new PieceDisplayManager(controller, panels, font);
         for (int row = 0; row < Board.rowsNum; ++row) {
             for (int col = 0; col < Board.columnsNum; ++col) {
                 var viewRow = Board.rowsNum - row - 1;
@@ -46,7 +45,7 @@ public class BoardView {
                 squarePanel.getStyleClass().add(styleClass);
 
                 if (!controller.isEmptySquare(viewRow, col)) {
-                    Text text = getPieceDisplay(viewRow, col);
+                    Text text = pieceDisplay.getDisplay(viewRow, col);
                     squarePanel.getChildren().add(text);
                 }
 
@@ -75,23 +74,18 @@ public class BoardView {
             constraint.setFillWidth(true);
             boardGrid.getColumnConstraints().add(constraint);
         }
-    }
 
-    private Text getPieceDisplay(int row, int col) {
-        var pieceView = controller.getSquareDisplay(row, col);
-        Text text = new Text(pieceView);
-        text.setFont(font);
-        return text;
+        highlight = new HighlightManager(panels);
     }
 
     private void onSquareClicked(MouseEvent event, int row, int col) {
         System.out.println("Clicked " + row + " " + col);
 
         var clickedSquare = new Square(row, col);
-        if (selectedPieceSquare != null && currentlyHighlighted.contains(clickedSquare)) {
+        if (selectedPieceSquare != null && highlight.contains(clickedSquare)) {
             var moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
             if (moveTrace.isValid()) {
-                movePieceView(selectedPieceSquare, clickedSquare);
+                pieceDisplay.moveView(selectedPieceSquare, clickedSquare);
                 if (moveTrace.isGameOver()) {
                     // TODO: Show window with winner
                     if (moveTrace.isDraw()) {
@@ -105,61 +99,30 @@ public class BoardView {
                     // TODO : Ask for piece to choose for promotion
                     var dest = moveTrace.move.getDestination();
                     controller.promotePiece(dest, Queen.class);
-                    updatePieceView(dest);
+                    pieceDisplay.updateView(dest);
                 }
             }
 
-            setHighlight(false);
+            removeHighlight();
         }
         else if (!controller.isEmptySquare(row, col)) {
-            setHighlight(false);
+            removeHighlight();
 
             List<Square> validSquares = controller.getValidMoves(row, col);
             if (validSquares.size() > 0) {
                 selectedPieceSquare = clickedSquare;
-                currentlyHighlighted = validSquares;
-                setHighlight(true);
+                highlight.set(validSquares, selectedPieceSquare);
+                highlight.set(true);
             }
         }
         else {
-            setHighlight(false);
+            removeHighlight();
         }
     }
 
-    private void setHighlight(boolean val) {
-        if (currentlyHighlighted == null) {
-            return;
-        }
-
-        setHighlightForSquare(selectedPieceSquare, val);
-        for (Square square : currentlyHighlighted) {
-            setHighlightForSquare(square, val);
-        }
-
-        if (!val) {
-            currentlyHighlighted = null;
-            selectedPieceSquare = null;
-        }
-    }
-
-    private void setHighlightForSquare(Square s, boolean val) {
-        var squareView = panels[s.x][s.y];
-        squareView.pseudoClassStateChanged(highlight, val);
-    }
-
-    private void movePieceView(Square from, Square to) {
-        var prevView = panels[from.x][from.y];
-        var currView = panels[to.x][to.y];
-        currView.getChildren().clear();
-        currView.getChildren().addAll(prevView.getChildren());
-        prevView.getChildren().clear();
-    }
-
-    private void updatePieceView(Square s) {
-        var currView = panels[s.x][s.y];
-        currView.getChildren().clear();
-        var display = getPieceDisplay(s.x, s.y);
-        currView.getChildren().add(display);
+    private void removeHighlight() {
+        selectedPieceSquare = null;
+        highlight.set(false);
     }
 
     public GridPane getBoardGrid() {
