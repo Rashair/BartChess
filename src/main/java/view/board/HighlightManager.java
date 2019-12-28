@@ -1,4 +1,4 @@
-package view;
+package view.board;
 
 import javafx.css.PseudoClass;
 import javafx.scene.layout.StackPane;
@@ -21,13 +21,14 @@ public class HighlightManager {
     void set(List<Square> squares, Square selected) {
         currentlyHighlighted = squares;
         selectedSquare = selected;
+        setActive(true);
     }
 
     boolean contains(Square s) {
         return currentlyHighlighted.contains(s);
     }
 
-    void set(boolean val) {
+    void setActive(boolean val) {
         if (currentlyHighlighted == null) {
             return;
         }

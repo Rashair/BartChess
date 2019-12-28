@@ -1,4 +1,4 @@
-package view;
+package view.board;
 
 import controller.BoardController;
 import javafx.scene.layout.StackPane;

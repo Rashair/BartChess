@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.promotion.PromotionWindow">
+    <children>
+        <Label layoutX="138.0" layoutY="34.0" text="Choose figure for promotion">
+            <font>
+                <Font name="System" size="24.0"/>
+            </font>
+        </Label>
+        <Button fx:id="knightButton" layoutX="170.0" layoutY="252.0" mnemonicParsing="false"
+                onAction="#onKnightButtonClick" prefHeight="108.0" prefWidth="97.0" text="♘">
+            <font>
+                <Font size="40.0"/>
+            </font>
+        </Button>
+        <Button fx:id="queenButton" layoutX="90.0" layoutY="105.0" mnemonicParsing="false"
+                onAction="#onQueenButtonClick" prefHeight="108.0" prefWidth="97.0" text="♕">
+            <font>
+                <Font size="40.0"/>
+            </font>
+        </Button>
+        <Button fx:id="bishopButton" layoutX="415.0" layoutY="105.0" mnemonicParsing="false"
+                onAction="#onBishopButtonClick" prefHeight="108.0" prefWidth="97.0" text="♗">
+            <font>
+                <Font size="40.0"/>
+            </font>
+        </Button>
+        <Button fx:id="rookButton" layoutX="252.0" layoutY="105.0" mnemonicParsing="false" onAction="#onRookButtonClick"
+                prefHeight="108.0" prefWidth="97.0" text="♖">
+            <font>
+                <Font size="40.0"/>
+            </font>
+        </Button>
+        <Button fx:id="pawnButton" layoutX="337.0" layoutY="252.0" mnemonicParsing="false" onAction="#onPawnButtonClick"
+                prefHeight="108.0" prefWidth="97.0" text="♙">
+            <font>
+                <Font size="40.0"/>
+            </font>
+        </Button>
+    </children>
+</AnchorPane>

@@ -1,7 +1,6 @@
-package view;
+package view.board;
 
 import controller.BoardController;
-import javafx.css.PseudoClass;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.input.MouseEvent;
@@ -14,6 +13,8 @@ import javafx.scene.text.Text;
 import model.grid.Board;
 import model.grid.Square;
 import model.pieces.Queen;
+import view.board.HighlightManager;
+import view.board.PieceDisplayManager;
 
 import java.util.List;
 
@@ -112,7 +113,6 @@ public class BoardView {
             if (validSquares.size() > 0) {
                 selectedPieceSquare = clickedSquare;
                 highlight.set(validSquares, selectedPieceSquare);
-                highlight.set(true);
             }
         }
         else {
@@ -122,7 +122,7 @@ public class BoardView {
 
     private void removeHighlight() {
         selectedPieceSquare = null;
-        highlight.set(false);
+        highlight.setActive(false);
     }
 
     public GridPane getBoardGrid() {

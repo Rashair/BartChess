@@ -90,7 +90,7 @@ public class ClassicJudge implements IJudge {
         return new ArrayList<>(result);
     }
 
-    // TODO: En passant logic + promotion
+    // TODO: En passant logic
     @Override
     public List<Move> getValidMoves(Pawn pawn, int x, int y) {
         Set<Square> possiblePositions = new HashSet<>();
