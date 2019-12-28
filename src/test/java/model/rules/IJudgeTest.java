@@ -92,6 +92,6 @@ class IJudgeTest extends GameTest {
 
     @AfterEach
     void cleanUp() {
-        board.clearAllPieces();
+        board.clear();
     }
 }

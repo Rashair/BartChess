@@ -26,7 +26,7 @@ abstract class PieceTest extends GameTest {
 
     @BeforeEach
     void setUp() {
-        board.clearAllPieces();
+        board.clear();
     }
 
     abstract Piece getTestedPiece();
@@ -55,7 +55,7 @@ abstract class PieceTest extends GameTest {
         board.setPiece(source, piece);
         List<Move> result = getMovesFromPosition(source, piece);
 
-        List<Move> expected = new ArrayList<>(Move.createMovesFromSource(source, expectedPossibleMoves));
+        List<Move> expected = new ArrayList<>(Move.createMovesFromSource(source, piece, expectedPossibleMoves));
         assertResultListMatchesExpected(result, expected);
     }
 

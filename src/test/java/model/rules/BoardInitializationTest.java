@@ -16,13 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BoardInitializationTest extends GameTest {
-    private Board board = model.getBoard();
-    private IJudge judge = model.getJudge();
+    private Board board;
+    private IJudge judge;
 
     private Square[][] knightsPositions;
     private final int[] pawnRows;
 
     BoardInitializationTest() {
+        board = model.getBoard();
+        judge = model.getJudge();
         knightsPositions = new Square[Colour.getNumberOfColours()][];
         knightsPositions[Colour.White.getIntValue()] = new Square[]{Board.parsePosition("b1"), Board.parsePosition("g1")};
         knightsPositions[Colour.Black.getIntValue()] = new Square[]{Board.parsePosition("b8"), Board.parsePosition("g8")};

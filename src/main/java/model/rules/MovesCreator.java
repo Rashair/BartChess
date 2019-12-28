@@ -24,7 +24,7 @@ class MovesCreator {
     }
 
 
-    Set<Move> getVerticalAndHorizontalMoves() {
+    Set<Square> getVerticalAndHorizontalMoves() {
         setupCurrentPositions();
         for (int i = x + 1; i < Board.rowsNum; ++i) {
             if (addPositionAndCheckIfShouldStop(i, y))
@@ -46,10 +46,10 @@ class MovesCreator {
                 break;
         }
 
-        return Move.createMovesFromSource(new Square(x, y), currentPositions);
+        return currentPositions;
     }
 
-    Set<Move> getDiagonalMoves() {
+    Set<Square> getDiagonalMoves() {
         setupCurrentPositions();
         for (int i = x + 1, j = y - 1; i < Board.rowsNum && j >= 0; ++i, --j) {
             if (addPositionAndCheckIfShouldStop(i, j))
@@ -71,7 +71,7 @@ class MovesCreator {
                 break;
         }
 
-        return Move.createMovesFromSource(new Square(x, y), currentPositions);
+        return currentPositions;
     }
 
 

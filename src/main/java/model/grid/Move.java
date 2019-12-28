@@ -1,5 +1,7 @@
 package model.grid;
 
+import model.pieces.Piece;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -7,11 +9,13 @@ import java.util.Set;
 public class Move implements Comparable<Move> {
     private final Square source;
     private final Square destination;
+    private final Piece movedPiece;
     private boolean isPromotionMove;
 
-    public Move(Square source, Square destination) {
+    public Move(Square source, Square destination, Piece movedPiece) {
         this.source = source;
         this.destination = destination;
+        this.movedPiece = movedPiece;
         isPromotionMove = false;
     }
 
@@ -23,16 +27,16 @@ public class Move implements Comparable<Move> {
         return destination;
     }
 
-    public void setToPromotionMove() {
-        isPromotionMove = true;
-    }
-
     public void setPromotionMove() {
         isPromotionMove = true;
     }
 
     public boolean isPromotionMove() {
         return isPromotionMove;
+    }
+
+    public Piece getMovedPiece() {
+        return movedPiece;
     }
 
     @Override
@@ -61,20 +65,20 @@ public class Move implements Comparable<Move> {
         return "[" + source.toString() + ", " + destination.toString() + "]";
     }
 
-    public static Set<Move> createMovesFromSource(String source, String... destinations) {
+    public static Set<Move> createMovesFromSource(String source, Piece movedPiece, String... destinations) {
         Square sourceSquare = Board.parsePosition(source);
         Set<Move> moves = new HashSet<>(destinations.length);
         for (String dest : destinations) {
-            moves.add(new Move(sourceSquare, Board.parsePosition(dest)));
+            moves.add(new Move(sourceSquare, Board.parsePosition(dest), movedPiece));
         }
 
         return moves;
     }
 
-    public static Set<Move> createMovesFromSource(Square source, Set<Square> destinations) {
+    public static Set<Move> createMovesFromSource(Square source, Piece movedPiece, Set<Square> destinations) {
         Set<Move> moves = new HashSet<>(destinations.size());
         for (Square dest : destinations) {
-            moves.add(new Move(source, dest));
+            moves.add(new Move(source, dest, movedPiece));
         }
 
         return moves;

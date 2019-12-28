@@ -14,7 +14,8 @@ public class Board {
 
     private final PieceFactory pieceFactory;
     private final Piece[][] pieces;
-    private final Square[] kingPosition = new Square[Colour.getNumberOfColours()];
+    private final Square[] kingPositions = new Square[Colour.getNumberOfColours()];
+    private Move lastMove;
 
     public Board(PieceFactory pieceFactory) {
         pieces = new Piece[rowsNum][columnsNum];
@@ -28,7 +29,7 @@ public class Board {
 
             pieces[position.x][position.y] = piece;
             if (piece instanceof King) {
-                kingPosition[piece.colour.getIntValue()] = position;
+                kingPositions[piece.colour.getIntValue()] = position;
             }
         }
     }
@@ -39,8 +40,10 @@ public class Board {
         setPiece(to, piece);
 
         if (piece instanceof King) {
-            kingPosition[piece.colour.getIntValue()] = to;
+            kingPositions[piece.colour.getIntValue()] = to;
         }
+
+        lastMove = new Move(from, to, piece);
     }
 
     public void movePiece(Move move) {
@@ -93,15 +96,24 @@ public class Board {
     }
 
     public Square getKingPosition(Colour colour) {
-        return kingPosition[colour.getIntValue()];
+        return kingPositions[colour.getIntValue()];
     }
 
-    public void clearAllPieces() {
+    public Move getLastMove() {
+        return lastMove;
+    }
+
+    public void setLastMove(Move move) {
+        this.lastMove = move;
+    }
+
+    public void clear() {
         for (int rowIt = 0; rowIt < rowsNum; ++rowIt) {
             for (int colIt = 0; colIt < columnsNum; ++colIt) {
                 pieces[rowIt][colIt] = null;
             }
         }
+        lastMove = null;
     }
 
     @Override

@@ -35,7 +35,7 @@ public class ClassicJudge implements IJudge {
 
         removeStandardInvalidPositions(possiblePositions, king.colour);
 
-        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
+        var result = Move.createMovesFromSource(new Square(x, y), king, possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
@@ -44,9 +44,10 @@ public class ClassicJudge implements IJudge {
     @Override
     public List<Move> getValidMoves(Queen queen, int x, int y) {
         var movesMaker = new MovesCreator(board, queen.colour, x, y);
-        var result = movesMaker.getVerticalAndHorizontalMoves();
-        result.addAll(movesMaker.getDiagonalMoves());
+        var squares = movesMaker.getVerticalAndHorizontalMoves();
+        squares.addAll(movesMaker.getDiagonalMoves());
 
+        var result = Move.createMovesFromSource(new Square(x, y), queen, squares);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
@@ -55,8 +56,9 @@ public class ClassicJudge implements IJudge {
     @Override
     public List<Move> getValidMoves(Rook rook, int x, int y) {
         var movesMaker = new MovesCreator(board, rook.colour, x, y);
-        var result = movesMaker.getVerticalAndHorizontalMoves();
+        var squares = movesMaker.getVerticalAndHorizontalMoves();
 
+        var result = Move.createMovesFromSource(new Square(x, y), rook, squares);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
@@ -66,8 +68,9 @@ public class ClassicJudge implements IJudge {
     @Override
     public List<Move> getValidMoves(Bishop bishop, int x, int y) {
         var movesMaker = new MovesCreator(board, bishop.colour, x, y);
-        var result = movesMaker.getDiagonalMoves();
+        var squares = movesMaker.getDiagonalMoves();
 
+        var result = Move.createMovesFromSource(new Square(x, y), bishop, squares);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
@@ -84,7 +87,7 @@ public class ClassicJudge implements IJudge {
 
         removeStandardInvalidPositions(possiblePositions, knight.colour);
 
-        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
+        var result = Move.createMovesFromSource(new Square(x, y), knight, possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
@@ -94,7 +97,7 @@ public class ClassicJudge implements IJudge {
     @Override
     public List<Move> getValidMoves(Pawn pawn, int x, int y) {
         Set<Square> possiblePositions = new HashSet<>();
-        int sign = pawn.colour == Colour.White ? 1 : -1;
+        int sign = (pawn.colour == Colour.White ? 1 : -1);
 
         Square forwardOne = new Square(x + sign, y);
         if (board.isEmptySquare(forwardOne)) {
@@ -106,17 +109,28 @@ public class ClassicJudge implements IJudge {
                 possiblePositions.add(forwardTwo);
         }
 
+        var lastMove = board.getLastMove();
+        boolean isLastMoveEnPassant = isEnPassant(lastMove);
+
         Square attackLeft = new Square(x + sign, y - 1);
         var pieceOnLeft = board.getPiece(attackLeft);
-        if (pieceOnLeft != null && pieceOnLeft.colour != pawn.colour)
+        // En passant
+        var skipLeft = new Square(x, y - 1);
+        var pieceSkipLeft = board.getPiece(skipLeft);
+        if (pieceOnLeft != null && pieceOnLeft.colour != pawn.colour
+                || (isLastMoveEnPassant && pieceSkipLeft == lastMove.getMovedPiece()))
             possiblePositions.add(attackLeft);
 
         Square attackRight = new Square(x + sign, y + 1);
         var pieceOnRight = board.getPiece(attackRight);
-        if (pieceOnRight != null && pieceOnRight.colour != pawn.colour)
+        // En passant
+        var skipRight = new Square(x, y + 1);
+        var pieceSkipRight = board.getPiece(skipRight);
+        if (pieceOnRight != null && pieceOnRight.colour != pawn.colour
+                || (isLastMoveEnPassant && lastMove.getMovedPiece() == pieceSkipRight))
             possiblePositions.add(attackRight);
 
-        var result = Move.createMovesFromSource(new Square(x, y), possiblePositions);
+        var result = Move.createMovesFromSource(new Square(x, y), pawn, possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         result.forEach(move -> {
@@ -126,6 +140,15 @@ public class ClassicJudge implements IJudge {
         });
 
         return new ArrayList<>(result);
+    }
+
+    private boolean isEnPassant(Move move) {
+        if (move == null)
+            return false;
+
+        var source = move.getSource();
+        var dest = move.getDestination();
+        return move.getMovedPiece() instanceof Pawn && Math.abs(source.x - dest.x) == 2;
     }
 
     private void removeStandardInvalidPositions(Set<Square> positions, Colour colour) {
