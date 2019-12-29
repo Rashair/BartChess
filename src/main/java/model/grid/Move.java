@@ -45,7 +45,7 @@ public class Move implements Comparable<Move> {
             return false;
 
         Move move = (Move) obj;
-        return source.equals(move.source) && destination.equals(move.destination);
+        return source.equals(move.source) && destination.equals(move.destination) && movedPiece.equals(move.getMovedPiece());
     }
 
     @Override
