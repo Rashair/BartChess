@@ -7,7 +7,7 @@ import model.rules.IJudge;
 
 import java.util.List;
 
-// TODO: Create EmptyPiece class instead of null !!!
+// TODO: Create EmptyPiece class instead of null.
 public abstract class Piece {
     public final Colour colour;
     protected boolean isAlive;

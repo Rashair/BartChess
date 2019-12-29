@@ -13,7 +13,6 @@ public abstract class GameTest {
         model = new GameModel();
     }
 
-
     protected static <T> void assertResultListMatchesExpected(List<T> result, List<T> expected) {
         assertResultListMatchesExpected(result, expected, "");
     }

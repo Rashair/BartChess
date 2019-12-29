@@ -11,7 +11,6 @@ import model.rules.IJudge;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Add player interaction
 public class Logic {
     private final Board board;
     private final IJudge judge;

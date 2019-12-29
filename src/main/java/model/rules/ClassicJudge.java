@@ -17,7 +17,6 @@ public class ClassicJudge implements IJudge {
     private final CheckValidator checkValidator;
 
     // TODO : Add a cache storing current valid moves for every existing piece for performance improvement
-    // TODO: Move validation when in check - there is a bug
     public ClassicJudge(Board board, State state) {
         this.board = board;
         this.state = state;
@@ -93,7 +92,6 @@ public class ClassicJudge implements IJudge {
         return new ArrayList<>(result);
     }
 
-    // TODO: En passant logic
     @Override
     public List<Move> getValidMoves(Pawn pawn, int x, int y) {
         Set<Square> possiblePositions = new HashSet<>();
@@ -109,26 +107,7 @@ public class ClassicJudge implements IJudge {
                 possiblePositions.add(forwardTwo);
         }
 
-        var lastMove = board.getLastMove();
-        boolean isLastMoveEnPassant = isEnPassant(lastMove);
-
-        Square attackLeft = new Square(x + sign, y - 1);
-        var pieceOnLeft = board.getPiece(attackLeft);
-        // En passant
-        var skipLeft = new Square(x, y - 1);
-        var pieceSkipLeft = board.getPiece(skipLeft);
-        if (pieceOnLeft != null && pieceOnLeft.colour != pawn.colour
-                || (isLastMoveEnPassant && pieceSkipLeft == lastMove.getMovedPiece()))
-            possiblePositions.add(attackLeft);
-
-        Square attackRight = new Square(x + sign, y + 1);
-        var pieceOnRight = board.getPiece(attackRight);
-        // En passant
-        var skipRight = new Square(x, y + 1);
-        var pieceSkipRight = board.getPiece(skipRight);
-        if (pieceOnRight != null && pieceOnRight.colour != pawn.colour
-                || (isLastMoveEnPassant && lastMove.getMovedPiece() == pieceSkipRight))
-            possiblePositions.add(attackRight);
+        addPossiblePawnAttackPositions(possiblePositions, pawn.colour, x, y, sign);
 
         var result = Move.createMovesFromSource(new Square(x, y), pawn, possiblePositions);
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
@@ -140,6 +119,27 @@ public class ClassicJudge implements IJudge {
         });
 
         return new ArrayList<>(result);
+    }
+
+    private void addPossiblePawnAttackPositions(Set<Square> possiblePositions, Colour pawnColour, int x, int y, int direction) {
+        var lastMove = board.getLastMove();
+        boolean isLastMoveEnPassant = isEnPassant(lastMove);
+
+        Square attackLeft = new Square(x + direction, y - 1);
+        Square skipLeft = new Square(x, y - 1);
+        var pieceOnLeft = board.getPiece(attackLeft);
+        var pieceSkipLeft = board.getPiece(skipLeft);
+        if (pieceOnLeft != null && pieceOnLeft.colour != pawnColour
+                || (isLastMoveEnPassant && pieceSkipLeft == lastMove.getMovedPiece()))
+            possiblePositions.add(attackLeft);
+
+        Square attackRight = new Square(x + direction, y + 1);
+        Square skipRight = new Square(x, y + 1);
+        var pieceOnRight = board.getPiece(attackRight);
+        var pieceSkipRight = board.getPiece(skipRight);
+        if (pieceOnRight != null && pieceOnRight.colour != pawnColour
+                || (isLastMoveEnPassant && lastMove.getMovedPiece() == pieceSkipRight))
+            possiblePositions.add(attackRight);
     }
 
     private boolean isEnPassant(Move move) {
