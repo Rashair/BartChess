@@ -1,8 +1,11 @@
 package view.board;
 
 import controller.BoardController;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -10,13 +13,15 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import model.grid.Board;
 import model.grid.Square;
-import model.pieces.Queen;
-import view.board.HighlightManager;
-import view.board.PieceDisplayManager;
+import model.pieces.Piece;
+import view.promotion.PromotionWindowController;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class BoardView {
     private final BoardController controller;
@@ -81,7 +86,6 @@ public class BoardView {
 
     private void onSquareClicked(MouseEvent event, int row, int col) {
         System.out.println("Clicked " + row + " " + col);
-
         var clickedSquare = new Square(row, col);
         if (selectedPieceSquare != null && highlight.contains(clickedSquare)) {
             var moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
@@ -96,10 +100,11 @@ public class BoardView {
                         var winner = moveTrace.getWinner();
                     }
                 }
-                if (moveTrace.move.isPromotionMove()) {
+                else if (moveTrace.move.isPromotionMove()) {
                     // TODO : Ask for piece to choose for promotion
+                    var promotionClass = getPromotionClass();
                     var dest = moveTrace.move.getDestination();
-                    controller.promotePiece(dest, Queen.class);
+                    controller.promotePiece(dest, promotionClass);
                     pieceDisplay.updateView(dest);
                 }
             }
@@ -118,6 +123,25 @@ public class BoardView {
         else {
             removeHighlight();
         }
+    }
+
+    private Class<? extends Piece> getPromotionClass() {
+        FXMLLoader loader;
+        Parent root;
+        try {
+            loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("../promotion/promotionWindow.fxml")));
+            root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Promotion");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        PromotionWindowController controller = loader.getController();
+        return controller.getPromotionChoice();
     }
 
     private void removeHighlight() {

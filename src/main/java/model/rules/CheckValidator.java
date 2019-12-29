@@ -228,8 +228,8 @@ class CheckValidator {
         return piece.colour != kingColour && (enemy1.isInstance(piece) || enemy2.isInstance(piece));
     }
 
-    private boolean isKingAttackedFromPiece(Piece piece, Class<?> enemy1) {
-        return isKingAttackedFromPiece(piece, enemy1, Integer.class);
+    private boolean isKingAttackedFromPiece(Piece piece, Class<?> enemy) {
+        return isKingAttackedFromPiece(piece, enemy, Integer.class);
     }
 
 }
