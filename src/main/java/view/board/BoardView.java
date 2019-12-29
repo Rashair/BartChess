@@ -14,9 +14,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Colour;
 import model.grid.Board;
 import model.grid.Square;
 import model.pieces.Piece;
+import view.game_over.GameOverWindowController;
 import view.promotion.PromotionWindowController;
 
 import java.io.IOException;
@@ -86,22 +88,22 @@ public class BoardView {
 
     private void onSquareClicked(MouseEvent event, int row, int col) {
         System.out.println("Clicked " + row + " " + col);
+
         var clickedSquare = new Square(row, col);
         if (selectedPieceSquare != null && highlight.contains(clickedSquare)) {
             var moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
             if (moveTrace.isValid()) {
                 pieceDisplay.moveView(selectedPieceSquare, clickedSquare);
                 if (moveTrace.isGameOver()) {
-                    // TODO: Show window with winner
                     if (moveTrace.isDraw()) {
-
+                        openGameOverWindow("Draw!");
                     }
                     else {
-                        var winner = moveTrace.getWinner();
+                        Colour winner = moveTrace.getWinner();
+                        openGameOverWindow(winner.toString() + " player won!");
                     }
                 }
                 else if (moveTrace.move.isPromotionMove()) {
-                    // TODO : Ask for piece to choose for promotion
                     var promotionClass = getPromotionClass();
                     var dest = moveTrace.move.getDestination();
                     controller.promotePiece(dest, promotionClass);
@@ -122,6 +124,22 @@ public class BoardView {
         }
         else {
             removeHighlight();
+        }
+    }
+
+    private void openGameOverWindow(String message) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("../game_over/gameOverWindow.fxml")));
+            Parent root = loader.load();
+            GameOverWindowController controller = loader.getController();
+            controller.setMessageLabel(message);
+
+            Stage stage = new Stage();
+            stage.setTitle("Game over");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
