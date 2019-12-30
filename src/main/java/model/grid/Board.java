@@ -2,6 +2,7 @@ package model.grid;
 
 import model.Colour;
 import model.pieces.King;
+import model.pieces.Pawn;
 import model.pieces.Piece;
 import model.pieces.PieceFactory;
 import org.apache.commons.lang3.tuple.Triple;
@@ -89,6 +90,9 @@ public class Board {
 
     public void promotePiece(Square pos, Class<? extends Piece> updatedClass) {
         var oldPiece = getPiece(pos);
+        if (!(oldPiece instanceof Pawn))
+            throw new IllegalArgumentException("You cannot promote piece other than pawn");
+
         setPiece(pos, pieceFactory.create(updatedClass, oldPiece.colour));
     }
 

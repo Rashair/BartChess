@@ -103,7 +103,6 @@ public class ClassicJudge implements IJudge {
         return new ArrayList<>(result);
     }
 
-
     private void removeStandardInvalidPositions(Set<Square> positions, Colour colour) {
         positions.removeIf(Board::isOutOfBoardPosition);
         positions.removeIf(position -> isSameColourPiece(colour, position));
