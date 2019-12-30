@@ -34,24 +34,33 @@ public class Board {
         }
     }
 
-    public void movePiece(Square from, Square to) {
-        var piece = getPiece(from);
+    public void movePiece(Move move) {
+        var piece = move.getMovedPiece();
+        var from = move.getSource();
+        var to = move.getDestination();
+
+        if (piece == null)
+            throw new IllegalArgumentException("You cannot move empty field");
+
         setPiece(from, null);
         setPiece(to, piece);
-
-        if (piece instanceof King) {
-            kingPositions[piece.colour.getIntValue()] = to;
+        if (move.isEnPassantMove()) {
+            setPiece(from.x, to.y, null);
         }
 
-        lastMove = new Move(from, to, piece);
+        if (piece instanceof King)
+            kingPositions[piece.colour.getIntValue()] = to;
+
+        lastMove = move;
     }
 
-    public void movePiece(Move move) {
-        movePiece(move.getSource(), move.getDestination());
+    public void movePiece(String from, String to) {
+        movePiece(parsePosition(from), parsePosition(to));
     }
 
-    public void movePiece(String source, String destination) {
-        movePiece(parsePosition(source), parsePosition(destination));
+    private void movePiece(Square from, Square to) {
+        var move = new Move(from, to, getPiece(from));
+        movePiece(move);
     }
 
     private void setPiece(int x, int y, Piece piece) {

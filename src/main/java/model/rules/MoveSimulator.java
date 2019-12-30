@@ -8,7 +8,7 @@ class MoveSimulator {
     private final Board board;
     private Move previousMove;
     private Move move;
-    private Piece destinationPiece;
+    private Piece pieceToKill;
 
     MoveSimulator(Board board) {
         this.board = board;
@@ -16,7 +16,7 @@ class MoveSimulator {
 
     void setMove(Move move) {
         this.move = move;
-        destinationPiece = board.getPiece(move.getDestination());
+        this.pieceToKill = board.getPiece(move.getDestination());
     }
 
     void makeMove() {
@@ -25,8 +25,8 @@ class MoveSimulator {
     }
 
     void reverseMove() {
-        board.movePiece(move.getDestination(), move.getSource());
-        board.setPiece(move.getDestination(), destinationPiece);
+        board.movePiece(move.getReverse());
+        board.setPiece(move.getDestination(), pieceToKill);
         board.setLastMove(previousMove);
     }
 }

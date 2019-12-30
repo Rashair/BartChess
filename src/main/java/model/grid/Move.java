@@ -10,13 +10,20 @@ public class Move implements Comparable<Move> {
     private final Square source;
     private final Square destination;
     private final Piece movedPiece;
+
     private boolean isPromotionMove;
+    private boolean isEnPassantMove;
 
     public Move(Square source, Square destination, Piece movedPiece) {
         this.source = source;
         this.destination = destination;
         this.movedPiece = movedPiece;
         isPromotionMove = false;
+        isEnPassantMove = false;
+    }
+
+    public Move getReverse() {
+        return new Move(destination, source, movedPiece);
     }
 
     public Square getSource() {
@@ -27,17 +34,26 @@ public class Move implements Comparable<Move> {
         return destination;
     }
 
-    public void setPromotionMove() {
-        isPromotionMove = true;
+    public Piece getMovedPiece() {
+        return movedPiece;
     }
 
     public boolean isPromotionMove() {
         return isPromotionMove;
     }
 
-    public Piece getMovedPiece() {
-        return movedPiece;
+    public void setPromotionMove() {
+        isPromotionMove = true;
     }
+
+    public boolean isEnPassantMove() {
+        return isEnPassantMove;
+    }
+
+    public void setEnPassantMove() {
+        isEnPassantMove = true;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

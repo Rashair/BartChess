@@ -5,17 +5,18 @@ import model.GameTest;
 import model.grid.Board;
 import model.grid.Move;
 import model.pieces.Piece;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 
 class LogicTest extends GameTest {
@@ -35,17 +36,24 @@ class LogicTest extends GameTest {
     void enPassantTest() {
         // Arrange
         Piece movedPawn = makeMoveWithLogic("b2", "b4", Colour.White);
-        makeMoveWithLogic("h7", "h5", Colour.Black);
+        makeMoveWithLogic("h7", "h5", Colour.Black); // non-meaningful
         makeMoveWithLogic("b4", "b5", Colour.White);
         makeMoveWithLogic("c7", "c5", Colour.Black);
 
+        var finalDestination = "c6";
         // Act
-        makeMoveWithLogic("b5", "c4", Colour.White);
+        assertDoesNotThrow((Executable) () -> makeMoveWithLogic("b5", finalDestination, Colour.White));
 
         // Assert
-        List<Move> validMovesForPawn = logic.getValidMoves(Board.parsePosition("c4"));
+        List<Move> validMovesForPawn = logic.getValidMoves(Board.parsePosition(finalDestination));
+        assertThat("Pawn should be on correct position", validMovesForPawn,
+                contains(validMovesForPawn.stream().filter(move -> move.getMovedPiece() == movedPawn).toArray()));
 
-        assertThat(validMovesForPawn, contains(validMovesForPawn.stream().filter(move -> move.getMovedPiece() == movedPawn)));
+        var expectedSquares = Arrays.asList(Board.parsePosition("b7"), Board.parsePosition("c7"), Board.parsePosition("d7"));
+        assertResultListMatchesExpected(validMovesForPawn.stream().map(Move::getDestination).collect(Collectors.toList()), expectedSquares,
+                "Pawn should be only able to move to those positions");
+
+        assertThat("Skipped pawn should be killed", logic.getValidMoves(Board.parsePosition("c5")), is(empty()));
     }
 
     private Piece makeMoveWithLogic(String from, String to, Colour colour) {

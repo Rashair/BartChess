@@ -94,62 +94,15 @@ public class ClassicJudge implements IJudge {
 
     @Override
     public List<Move> getValidMoves(Pawn pawn, int x, int y) {
-        Set<Square> possiblePositions = new HashSet<>();
-        int sign = (pawn.colour == Colour.White ? 1 : -1);
+        var pos = new Square(x, y);
+        var validator = new PawnMoveValidator(board, pawn, pos);
 
-        Square forwardOne = new Square(x + sign, y);
-        if (board.isEmptySquare(forwardOne)) {
-            possiblePositions.add(forwardOne);
-
-            Square forwardTwo = new Square(x + 2 * sign, y);
-            int firstRow = pawn.colour == Colour.White ? 1 : Board.rowsNum - 2;
-            if (x == firstRow && board.isEmptySquare(forwardTwo))
-                possiblePositions.add(forwardTwo);
-        }
-
-        addPossiblePawnAttackPositions(possiblePositions, pawn.colour, x, y, sign);
-
-        var result = Move.createMovesFromSource(new Square(x, y), pawn, possiblePositions);
+        var result = validator.getValidMoves();
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
-
-        result.forEach(move -> {
-            var destX = move.getDestination().x;
-            if (destX == 0 || destX == Board.rowsNum - 1)
-                move.setPromotionMove();
-        });
 
         return new ArrayList<>(result);
     }
 
-    private void addPossiblePawnAttackPositions(Set<Square> possiblePositions, Colour pawnColour, int x, int y, int direction) {
-        var lastMove = board.getLastMove();
-        boolean isLastMoveEnPassant = isEnPassant(lastMove);
-
-        Square attackLeft = new Square(x + direction, y - 1);
-        Square skipLeft = new Square(x, y - 1);
-        var pieceOnLeft = board.getPiece(attackLeft);
-        var pieceSkipLeft = board.getPiece(skipLeft);
-        if (pieceOnLeft != null && pieceOnLeft.colour != pawnColour
-                || (isLastMoveEnPassant && pieceSkipLeft == lastMove.getMovedPiece()))
-            possiblePositions.add(attackLeft);
-
-        Square attackRight = new Square(x + direction, y + 1);
-        Square skipRight = new Square(x, y + 1);
-        var pieceOnRight = board.getPiece(attackRight);
-        var pieceSkipRight = board.getPiece(skipRight);
-        if (pieceOnRight != null && pieceOnRight.colour != pawnColour
-                || (isLastMoveEnPassant && lastMove.getMovedPiece() == pieceSkipRight))
-            possiblePositions.add(attackRight);
-    }
-
-    private boolean isEnPassant(Move move) {
-        if (move == null)
-            return false;
-
-        var source = move.getSource();
-        var dest = move.getDestination();
-        return move.getMovedPiece() instanceof Pawn && Math.abs(source.x - dest.x) == 2;
-    }
 
     private void removeStandardInvalidPositions(Set<Square> positions, Colour colour) {
         positions.removeIf(Board::isOutOfBoardPosition);
