@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.fail;
 
 
 class LogicTest extends GameTest {
@@ -58,7 +59,7 @@ class LogicTest extends GameTest {
         assertResultListMatchesExpected(validMovesForPawn.stream().map(Move::getDestination).collect(Collectors.toList()), expectedSquares,
                 "Pawn should be only able to move to those positions");
 
-        assertThat("Skipped pawn should be killed", logic.getValidMoves(Board.parsePosition("c5")), is(empty()));
+        assertThat("Skipped pawn should be killed", board.getPiece("c5"), is(nullValue()));
     }
 
     @Test
@@ -81,7 +82,7 @@ class LogicTest extends GameTest {
 
         // Assert
         List<Move> validMovesForQueen = logic.getValidMoves(Board.parsePosition(finalDestination));
-        assertThat("Queen should be on correct position", validMovesForQueen,
+        assertThat("Promoted queen should be on correct position", validMovesForQueen,
                 contains(validMovesForQueen.stream().filter(move -> move.getMovedPiece() instanceof Queen).toArray()));
         assertOnlyKingCanMove(finalDestination);
     }
@@ -103,10 +104,103 @@ class LogicTest extends GameTest {
         }
     }
 
+    @Test
+    @DisplayName("Right valid castling")
+    void rightValidCastlingTest() {
+        // Arrange
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("g7", "g5", Colour.Black); // pawn
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+        makeMoveWithLogic("f8", "h6", Colour.Black); // bishop
+
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("g8", "f6", Colour.Black); // knight
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+
+        var blackRook = board.getPiece("h8");
+        // Act
+        try {
+            makeMoveWithLogic("e8", "g8", Colour.Black); // castling to the right
+        } catch (IllegalArgumentException e) {
+            fail("Move should be valid");
+        }
+
+        // Assert
+        assertThat("Black rook should be on correct position", board.getPiece("f8"), equalTo(blackRook));
+    }
+
+    @Test
+    @DisplayName("Left valid castling")
+    void leftValidCastlingTest() {
+        // Arrange
+        makeMoveWithLogic("b2", "b4", Colour.White); // pawn
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c2", "c4", Colour.White); // pawn
+        makeMoveWithLogic("h6", "g8", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c1", "a3", Colour.White); // bishop
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("b1", "c3", Colour.White); // knight
+        makeMoveWithLogic("h6", "g8", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("d1", "a4", Colour.White); // queen
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        var whiteRook = board.getPiece("a1");
+        // Act
+        try {
+            makeMoveWithLogic("e1", "c1", Colour.White); // castling to the left
+        } catch (IllegalArgumentException e) {
+            fail("Move should be valid");
+        }
+
+        assertThat("White rook should be on correct position", board.getPiece("d1"), equalTo(whiteRook));
+    }
+
+    @Test
+    @DisplayName("Invalid castling")
+    void invalidCastlingTest() {
+        // Arrange
+        makeMoveWithLogic("b2", "b4", Colour.White); // pawn
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c2", "c4", Colour.White); // pawn
+        makeMoveWithLogic("h6", "g8", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("d2", "d4", Colour.White); // pawn
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c1", "a3", Colour.White); // bishop
+        makeMoveWithLogic("e7", "e6", Colour.Black); // pawn
+
+        makeMoveWithLogic("b1", "c3", Colour.White); // knight
+        makeMoveWithLogic("d8", "f6", Colour.Black); // queen
+
+        makeMoveWithLogic("d1", "a4", Colour.White); // queen
+        makeMoveWithLogic("f6", "d4", Colour.Black); // queen poses a threat on d1
+
+        try {
+            makeMoveWithLogic("e1", "c1", Colour.White); // castling to the left
+            fail("Move should be invalid");
+        } catch (IllegalArgumentException ignored) {
+        }
+
+    }
+
     private Piece makeMoveWithLogic(String from, String to, Colour colour) {
         var validMoves = logic.getValidMoves(Board.parsePosition(from));
-        Move move = validMoves.stream().filter(m -> m.getDestination().equals(Board.parsePosition(to))).findFirst().get();
+        var optionalMove = validMoves.stream().filter(m -> m.getDestination().equals(Board.parsePosition(to))).findFirst();
+
+        if (optionalMove.isEmpty())
+            throw new IllegalArgumentException();
+
+        Move move = optionalMove.get();
         logic.makeMove(move, colour);
+
         return move.getMovedPiece();
     }
 }
