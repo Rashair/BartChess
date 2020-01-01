@@ -158,12 +158,101 @@ class LogicTest extends GameTest {
             fail("Move should be valid");
         }
 
+        // Assert
         assertThat("White rook should be on correct position", board.getPiece("d1"), equalTo(whiteRook));
     }
 
     @Test
-    @DisplayName("Invalid castling")
-    void invalidCastlingTest() {
+    @DisplayName("Invalid castling - king moved before")
+    void invalidCastlingKingMovedTest() {
+        // Arrange
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("g7", "g5", Colour.Black); // pawn
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+        makeMoveWithLogic("f8", "h6", Colour.Black); // bishop
+
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("g8", "f6", Colour.Black); // knight
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+        makeMoveWithLogic("e8", "f8", Colour.Black); // king move
+
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("f8", "e8", Colour.Black); // king returns
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+
+        // Act && Assert
+        try {
+            makeMoveWithLogic("e8", "g8", Colour.Black); // castling to the right
+            fail("Move should be invalid");
+        } catch (IllegalArgumentException ignored) {
+        }
+    }
+
+    @Test
+    @DisplayName("Invalid castling - rook moved before")
+    void invalidCastlingRookMovedTest() {
+        // Arrange
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("g7", "g5", Colour.Black); // pawn
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+        makeMoveWithLogic("f8", "h6", Colour.Black); // bishop
+
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("g8", "f6", Colour.Black); // knight
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+        makeMoveWithLogic("h8", "g8", Colour.Black); // rook move
+
+        makeMoveWithLogic("b1", "a3", Colour.White); // non-meaningful
+        makeMoveWithLogic("g8", "h8", Colour.Black); // rook returns
+
+        makeMoveWithLogic("a3", "b1", Colour.White); // non-meaningful
+
+        // Act && Assert
+        try {
+            makeMoveWithLogic("e8", "g8", Colour.Black); // castling to the right
+            fail("Move should be invalid");
+        } catch (IllegalArgumentException ignored) {
+        }
+    }
+
+    @Test
+    @DisplayName("Invalid castling - king in check")
+    void invalidCastlingCheckTest() {
+        // Arrange
+        makeMoveWithLogic("b2", "b4", Colour.White); // pawn
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c2", "c4", Colour.White); // pawn
+        makeMoveWithLogic("h6", "g8", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("f2", "f4", Colour.White); // pawn
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c1", "a3", Colour.White); // bishop
+        makeMoveWithLogic("h6", "g8", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("b1", "c3", Colour.White); // knight
+        makeMoveWithLogic("e7", "e6", Colour.Black); // pawn
+
+        makeMoveWithLogic("d1", "a4", Colour.White); // queen
+        makeMoveWithLogic("d8", "h4", Colour.Black); // queen puts king in check
+
+        // Act && Assert
+        try {
+            makeMoveWithLogic("e1", "c1", Colour.White); // castling to the left
+            fail("Move should be invalid");
+        } catch (IllegalArgumentException ignored) {
+        }
+    }
+
+    @Test
+    @DisplayName("Invalid castling - threat from enemy")
+    void invalidCastlingThreatTest() {
         // Arrange
         makeMoveWithLogic("b2", "b4", Colour.White); // pawn
         makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
@@ -183,12 +272,39 @@ class LogicTest extends GameTest {
         makeMoveWithLogic("d1", "a4", Colour.White); // queen
         makeMoveWithLogic("f6", "d4", Colour.Black); // queen poses a threat on d1
 
+        // Act && Assert
         try {
             makeMoveWithLogic("e1", "c1", Colour.White); // castling to the left
             fail("Move should be invalid");
         } catch (IllegalArgumentException ignored) {
         }
+    }
 
+    @Test
+    @DisplayName("Invalid castling - knight between king and rook")
+    void invalidCastlingPieceTest() {
+        // Arrange
+        makeMoveWithLogic("b2", "b4", Colour.White); // pawn
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c2", "c4", Colour.White); // pawn
+        makeMoveWithLogic("h6", "g8", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("d2", "d4", Colour.White); // pawn
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("c1", "a3", Colour.White); // bishop
+        makeMoveWithLogic("h6", "g8", Colour.Black); // non-meaningful
+
+        makeMoveWithLogic("d1", "a4", Colour.White); // queen
+        makeMoveWithLogic("g8", "h6", Colour.Black); // non-meaningful
+
+        // Act && Assert
+        try {
+            makeMoveWithLogic("e1", "c1", Colour.White); // castling to the left
+            fail("Move should be invalid");
+        } catch (IllegalArgumentException ignored) {
+        }
     }
 
     private Piece makeMoveWithLogic(String from, String to, Colour colour) {

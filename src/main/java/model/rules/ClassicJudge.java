@@ -63,7 +63,6 @@ public class ClassicJudge implements IJudge {
         return new ArrayList<>(result);
     }
 
-    // TODO : Castling logic
     @Override
     public List<Move> getValidMoves(Bishop bishop, int x, int y) {
         var movesMaker = new MovesCreator(board, bishop.colour, x, y);
