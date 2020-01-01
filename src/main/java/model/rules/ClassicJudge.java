@@ -16,14 +16,12 @@ public class ClassicJudge implements IJudge {
     private final State state;
     private final CheckValidator checkValidator;
 
-    // TODO : Add a cache storing current valid moves for every existing piece for performance improvement
     public ClassicJudge(Board board, State state) {
         this.board = board;
         this.state = state;
         this.checkValidator = new CheckValidator(board, state);
     }
 
-    // TODO : Castling logic
     @Override
     public List<Move> getValidMoves(King king, int x, int y) {
         Set<Square> possiblePositions = new HashSet<>(Arrays.asList(
@@ -31,13 +29,44 @@ public class ClassicJudge implements IJudge {
                 new Square(x, y - 1), new Square(x, y + 1),
                 new Square(x - 1, y - 1), new Square(x - 1, y), new Square(x - 1, y + 1)
         ));
-
         removeStandardInvalidPositions(possiblePositions, king.colour);
 
-        var result = Move.createMovesFromSource(new Square(x, y), king, possiblePositions);
+        var pos = new Square(x, y);
+        Set<Move> result = Move.createMovesFromSource(new Square(x, y), king, possiblePositions);
+        Set<Move> castlingMoves = getCastlingMoves(king, pos);
+        result.addAll(castlingMoves);
+
         result.removeIf(checkValidator::isKingAttackedAfterAllyMove);
 
         return new ArrayList<>(result);
+    }
+
+    private HashSet<Move> getCastlingMoves(King king, Square pos) {
+        var possiblePositions = new HashSet<Square>();
+        if (!board.wasKingMoved(king) && !state.isInCheck(king.colour)) {
+            Piece pieceToTheLeft = board.getPiece(pos.x, 0);
+            if (pieceToTheLeft instanceof Rook && !board.wasRookMoved((Rook) pieceToTheLeft) &&
+                    board.areFieldsBetweenEmpty(pos.x, 0, pos.y)) {
+                var moveLeft = new Move(pos, new Square(pos.x, pos.y - 1), king);
+                if (!checkValidator.isKingAttackedAfterAllyMove(moveLeft)) {
+                    possiblePositions.add(new Square(pos.x, pos.y - 2));
+                }
+            }
+
+            Piece pieceToTheRight = board.getPiece(pos.x, Board.columnsNum - 1);
+            if (pieceToTheRight instanceof Rook && !board.wasRookMoved((Rook) pieceToTheRight) &&
+                    board.areFieldsBetweenEmpty(pos.x, pos.y, Board.columnsNum - 1)) {
+                var moveRight = new Move(pos, new Square(pos.x, pos.y + 1), king);
+                if (!checkValidator.isKingAttackedAfterAllyMove(moveRight)) {
+                    possiblePositions.add(new Square(pos.x, pos.y + 2));
+                }
+            }
+        }
+
+        var result = Move.createMovesFromSource(pos, king, possiblePositions);
+        result.forEach(Move::setCastlingMove);
+
+        return result;
     }
 
     @Override

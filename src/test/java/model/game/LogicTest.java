@@ -6,6 +6,7 @@ import model.grid.Board;
 import model.grid.Move;
 import model.pieces.Piece;
 import model.pieces.Queen;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,12 @@ class LogicTest extends GameTest {
         logic.initializeBoard();
     }
 
+    @AfterEach
+    void cleanUp() {
+        board.clear();
+        clearState();
+    }
+
     @Test
     @DisplayName("En passant test")
     void enPassantTest() {
@@ -44,7 +51,6 @@ class LogicTest extends GameTest {
         makeMoveWithLogic("h7", "h5", Colour.Black); // non-meaningful
         makeMoveWithLogic("b4", "b5", Colour.White);
         makeMoveWithLogic("c7", "c5", Colour.Black);
-
 
         // Act
         var finalDestination = "c6";
@@ -311,8 +317,9 @@ class LogicTest extends GameTest {
         var validMoves = logic.getValidMoves(Board.parsePosition(from));
         var optionalMove = validMoves.stream().filter(m -> m.getDestination().equals(Board.parsePosition(to))).findFirst();
 
-        if (optionalMove.isEmpty())
+        if (optionalMove.isEmpty()) {
             throw new IllegalArgumentException();
+        }
 
         Move move = optionalMove.get();
         logic.makeMove(move, colour);

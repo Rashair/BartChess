@@ -57,7 +57,7 @@ public class BoardController {
             currentlyConsideredMoves = null;
         }
 
-        return new ArrayList<Square>();
+        return new ArrayList<>();
     }
 
     public MoveTrace movePiece(Square from, Square to) {
@@ -76,7 +76,7 @@ public class BoardController {
         return new MoveTrace();
     }
 
-    public void promotePiece(Square square, Class<? extends Piece> promoted) {
-        logic.promotePiece(square, promoted);
+    public MoveTrace promotePiece(Square square, Class<? extends Piece> promoted) {
+        return logic.promotePiece(square, promoted);
     }
 }

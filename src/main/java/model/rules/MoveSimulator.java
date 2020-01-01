@@ -2,13 +2,12 @@ package model.rules;
 
 import model.grid.Board;
 import model.grid.Move;
-import model.pieces.Piece;
+import model.grid.MoveData;
 
 class MoveSimulator {
     private final Board board;
-    private Move previousMove;
+    private MoveData previousMoveData;
     private Move move;
-    private Piece pieceToKill;
 
     MoveSimulator(Board board) {
         this.board = board;
@@ -16,17 +15,14 @@ class MoveSimulator {
 
     void setMove(Move move) {
         this.move = move;
-        this.pieceToKill = board.getPiece(move.getDestination());
+        this.previousMoveData = board.getLastMoveData();
     }
 
     void makeMove() {
-        previousMove = board.getLastMove();
         board.movePiece(move);
     }
 
     void reverseMove() {
-        board.movePiece(move.getReverse());
-        board.setPiece(move.getDestination(), pieceToKill);
-        board.setLastMove(previousMove);
+        board.reverseLastMove(previousMoveData);
     }
 }

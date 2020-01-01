@@ -25,7 +25,11 @@ class CheckValidator {
     private enum Direction {Left, UpperLeft, Top, UpperRight, Right, LowerRight, Bottom, LowerLeft}
 
     private void setKingColour(Move move) {
-        kingColour = board.getPiece(move.getSource()).colour;
+        kingColour = move.getMovedPiece().colour;
+    }
+
+    private void setKingColour(Colour colour) {
+        this.kingColour = colour;
     }
 
     boolean isKingAttackedAfterAllyMove(Move move) {
@@ -41,28 +45,38 @@ class CheckValidator {
             }
         }
         else if (source.x == kingPosition.x) {
-            if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Left))
+            if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Left)) {
                 return reverseMoveAndReturnTrue();
-            else if (isKingAttackedFromDirection(kingPosition, Direction.Right))
+            }
+            else if (isKingAttackedFromDirection(kingPosition, Direction.Right)) {
                 return reverseMoveAndReturnTrue();
+            }
         }
         else if (source.x < kingPosition.x) {
-            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Bottom))
+            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Bottom)) {
                 return reverseMoveAndReturnTrue();
-            else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.LowerLeft))
+            }
+            else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.LowerLeft)) {
                 return reverseMoveAndReturnTrue();
+            }
             else if (isKingAttackedFromDirection(kingPosition, Direction.LowerRight)) // source.y > kingPosition.y
+            {
                 return reverseMoveAndReturnTrue();
+            }
         }
         else { // source.x > kingPosition.x
-            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Top))
+            if (source.y == kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.Top)) {
                 return reverseMoveAndReturnTrue();
+            }
 
-            else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.UpperLeft))
+            else if (source.y < kingPosition.y && isKingAttackedFromDirection(kingPosition, Direction.UpperLeft)) {
                 return reverseMoveAndReturnTrue();
+            }
 
             else if (isKingAttackedFromDirection(kingPosition, Direction.UpperRight))  // source.y > kingPosition.y
+            {
                 return reverseMoveAndReturnTrue();
+            }
         }
 
         moveSimulator.reverseMove();
@@ -70,6 +84,8 @@ class CheckValidator {
     }
 
     boolean isKingInCheck(Colour kingColour) {
+        setKingColour(kingColour);
+
         var kingPosition = board.getKingPosition(kingColour);
         for (Direction dir : Direction.values()) {
             if (isKingAttackedFromDirection(kingPosition, dir)) {
@@ -92,8 +108,9 @@ class CheckValidator {
             var piece = board.getPiece(square);
             return piece == null || !isKingAttackedFromPiece(piece, Knight.class);
         });
-        if (knightSquares.size() > 0)
+        if (knightSquares.size() > 0) {
             return true;
+        }
 
         var rowToAdd = kingColour == Colour.White ? 1 : -1;
         Square[] pawnSquares = {new Square(kingPosition.x + rowToAdd, kingPosition.y - 1),
@@ -102,8 +119,9 @@ class CheckValidator {
         for (int i = 0; i < 2; ++i) {
             if (!Board.isOutOfBoardPosition(pawnSquares[i])) {
                 var piece = board.getPiece(pawnSquares[i]);
-                if ((piece != null && isKingAttackedFromPiece(piece, Pawn.class)))
+                if ((piece != null && isKingAttackedFromPiece(piece, Pawn.class))) {
                     return true;
+                }
             }
         }
 

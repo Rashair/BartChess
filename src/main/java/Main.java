@@ -9,7 +9,7 @@ public class Main extends Application {
     private final int windowSize = 900;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         var model = new GameModel();
         var boardController = new BoardController(model);
         boardController.InitializeGame();

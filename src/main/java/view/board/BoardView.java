@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Colour;
+import model.game.MoveTrace;
 import model.grid.Board;
 import model.grid.Square;
 import model.pieces.Piece;
@@ -91,23 +92,20 @@ public class BoardView {
 
         var clickedSquare = new Square(row, col);
         if (selectedPieceSquare != null && highlight.contains(clickedSquare)) {
-            var moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
+            MoveTrace moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
             if (moveTrace.isValid()) {
                 pieceDisplay.moveView(selectedPieceSquare, clickedSquare);
                 if (moveTrace.isGameOver()) {
-                    if (moveTrace.isDraw()) {
-                        openGameOverWindow("Draw!");
-                    }
-                    else {
-                        Colour winner = moveTrace.getWinner();
-                        openGameOverWindow(winner.toString() + " player won!");
-                    }
+                    handleGameOver(moveTrace);
                 }
                 else if (moveTrace.move.isPromotionMove()) {
                     var promotionClass = getPromotionClass();
                     var dest = moveTrace.move.getDestination();
-                    controller.promotePiece(dest, promotionClass);
+                    MoveTrace promotionMoveTrace = controller.promotePiece(dest, promotionClass);
                     pieceDisplay.updateView(dest);
+                    if (promotionMoveTrace.isGameOver()) {
+                        handleGameOver(promotionMoveTrace);
+                    }
                 }
             }
 
@@ -124,6 +122,16 @@ public class BoardView {
         }
         else {
             removeHighlight();
+        }
+    }
+
+    private void handleGameOver(MoveTrace trace) {
+        if (trace.isDraw()) {
+            openGameOverWindow("Draw!");
+        }
+        else {
+            Colour winner = trace.getWinner();
+            openGameOverWindow(winner.toString() + " player won!");
         }
     }
 

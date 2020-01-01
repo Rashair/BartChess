@@ -15,10 +15,15 @@ class IJudgeTest extends GameTest {
     IJudge judge = model.getJudge();
     State state = model.getState();
 
-
     @BeforeEach
     void setUp() {
         board.initializePieces(judge.getInitialPositionsForAllPieces());
+    }
+
+    @AfterEach
+    void cleanUp() {
+        board.clear();
+        clearState();
     }
 
     @Test
@@ -80,18 +85,10 @@ class IJudgeTest extends GameTest {
         board.movePiece("b8", "c8"); // White queen
         board.movePiece("f7", "g6"); // Black king
 
-        // 10 Qe6
+        // Act -> 10 Qe6
         board.movePiece("c8", "e6"); // White queen
 
-        // Act
-        boolean anyValidMovesForPlayer = judge.areAnyValidMovesForPlayer(Colour.Black);
-
         // Assert
-        assertFalse(anyValidMovesForPlayer, "There should be no valid moves on stalemate for black player\n" + board.toString());
-    }
-
-    @AfterEach
-    void cleanUp() {
-        board.clear();
+        assertFalse(judge.areAnyValidMovesForPlayer(Colour.Black), "There should be no valid moves on stalemate for black player\n" + board.toString());
     }
 }

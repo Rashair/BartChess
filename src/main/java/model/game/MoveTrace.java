@@ -17,10 +17,9 @@ public class MoveTrace {
         winner = null;
     }
 
-    public MoveTrace setGameOver(Colour winner) {
+    public void setGameOver(Colour winner) {
         isGameOver = true;
         this.winner = winner;
-        return this;
     }
 
     public boolean isGameOver() {

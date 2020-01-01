@@ -5,7 +5,6 @@ import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
 import model.pieces.Piece;
-import model.pieces.Queen;
 import model.rules.IJudge;
 
 import java.util.ArrayList;
@@ -41,6 +40,17 @@ public class Logic {
     public MoveTrace makeMove(Move move, Colour playerColour) {
         board.movePiece(move);
 
+        return setStateAndReturnTrace(move, playerColour);
+    }
+
+    public MoveTrace promotePiece(Square pos, Class<? extends Piece> promoted) {
+        board.promotePiece(pos, promoted);
+        var piece = board.getPiece(pos);
+
+        return setStateAndReturnTrace(new Move(pos, pos, piece), piece.colour);
+    }
+
+    private MoveTrace setStateAndReturnTrace(Move move, Colour playerColour) {
         // If valid move was made then player cannot be in check anymore.
         if (state.isInCheck(playerColour)) {
             state.setCheck(playerColour, false);
@@ -55,17 +65,14 @@ public class Logic {
         if (!judge.areAnyValidMovesForPlayer(oppositePlayerColour)) {
             isGameOver = true;
             Colour winner = null;
-            if (state.isInCheck(oppositePlayerColour))
+            if (state.isInCheck(oppositePlayerColour)) {
                 winner = playerColour;
+            }
 
             result.setGameOver(winner);
         }
 
         return result;
-    }
-
-    public void promotePiece(Square square, Class<? extends Piece> promoted) {
-        board.promotePiece(square, promoted);
     }
 
     public boolean isGameOver() {

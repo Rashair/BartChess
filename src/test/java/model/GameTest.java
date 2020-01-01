@@ -14,6 +14,12 @@ public abstract class GameTest {
         model = new GameModel();
     }
 
+    protected void clearState() {
+        var state = model.getState();
+        state.setCheck(Colour.White, false);
+        state.setCheck(Colour.Black, false);
+    }
+
     protected static <T> void assertResultListMatchesExpected(List<T> result, List<T> expected) {
         assertResultListMatchesExpected(result, expected, "");
     }

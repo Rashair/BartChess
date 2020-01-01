@@ -9,7 +9,6 @@ import model.players.Human;
 import model.rules.ClassicJudge;
 import model.rules.IJudge;
 
-// TODO: Must start implementing MVC pattern - controller will start game
 public class GameModel {
     private final Logic logic;
     private final State state;
