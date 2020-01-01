@@ -4,8 +4,6 @@ import model.game.Logic;
 import model.game.State;
 import model.grid.Board;
 import model.pieces.PieceFactory;
-import model.players.Computer;
-import model.players.Human;
 import model.rules.ClassicJudge;
 import model.rules.IJudge;
 

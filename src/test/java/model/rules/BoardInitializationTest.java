@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BoardInitializationTest extends GameTest {
-    private Board board;
-    private IJudge judge;
+    private final Board board;
+    private final IJudge judge;
 
     private Square[][] knightsPositions;
     private final int[] pawnRows;

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class HighlightManager {
     private final PseudoClass highlight;
-    private StackPane[][] panels;
+    private final StackPane[][] panels;
 
     private List<Square> currentlyHighlighted;
     private Square selectedSquare;

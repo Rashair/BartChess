@@ -25,10 +25,6 @@ public class Move implements Comparable<Move> {
         isCastlingMove = false;
     }
 
-    public Move getReverse() {
-        return new Move(destination, source, movedPiece);
-    }
-
     public Square getSource() {
         return source;
     }

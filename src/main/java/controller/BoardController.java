@@ -44,7 +44,8 @@ public class BoardController {
     }
 
     public String getSquareDisplay(int row, int col) {
-        return board.getPiece(row, col).toString();
+        var piece = board.getPiece(row, col);
+        return piece != null ? piece.toString() : null;
     }
 
     public List<Square> getValidMoves(int row, int col) {

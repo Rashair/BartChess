@@ -11,11 +11,6 @@ public class Square implements Comparable<Square> {
         this.y = y;
     }
 
-    public void move(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
@@ -23,8 +18,9 @@ public class Square implements Comparable<Square> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Square))
+        if (!(obj instanceof Square)) {
             return false;
+        }
 
         var square = (Square) obj;
         return square.x == x && square.y == y;

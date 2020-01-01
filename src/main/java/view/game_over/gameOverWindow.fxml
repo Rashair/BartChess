@@ -6,12 +6,10 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.game_over.GameOverWindowController">
-    <children>
-        <Label fx:id="messageLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="61.0" layoutY="101.0"
-               prefHeight="147.0" prefWidth="479.0" text="You won" textAlignment="CENTER" wrapText="true">
-            <font>
-                <Font size="48.0"/>
-            </font>
-        </Label>
-    </children>
+    <Label fx:id="messageLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="61.0" layoutY="101.0"
+           prefHeight="147.0" prefWidth="479.0" text="You won" textAlignment="CENTER" wrapText="true">
+        <font>
+            <Font size="48.0"/>
+        </font>
+    </Label>
 </AnchorPane>

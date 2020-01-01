@@ -29,11 +29,17 @@ public class PieceDisplayManager {
         var currView = panels[s.x][s.y];
         currView.getChildren().clear();
         var display = getDisplay(s.x, s.y);
-        currView.getChildren().add(display);
+        if (display != null) {
+            currView.getChildren().add(display);
+        }
     }
 
     public Text getDisplay(int row, int col) {
         var pieceView = controller.getSquareDisplay(row, col);
+        if (pieceView == null) {
+            return null;
+        }
+
         Text text = new Text(pieceView);
         text.setFont(font);
         return text;

@@ -2,7 +2,6 @@ package model.rules;
 
 import model.Colour;
 import model.grid.Board;
-import model.grid.Move;
 import model.grid.Square;
 
 import java.util.HashSet;
@@ -27,23 +26,27 @@ class MovesCreator {
     Set<Square> getVerticalAndHorizontalMoves() {
         setupCurrentPositions();
         for (int i = x + 1; i < Board.rowsNum; ++i) {
-            if (addPositionAndCheckIfShouldStop(i, y))
+            if (addPositionAndCheckIfShouldStop(i, y)) {
                 break;
+            }
         }
 
         for (int i = x - 1; i >= 0; --i) {
-            if (addPositionAndCheckIfShouldStop(i, y))
+            if (addPositionAndCheckIfShouldStop(i, y)) {
                 break;
+            }
         }
 
         for (int j = y + 1; j < Board.columnsNum; ++j) {
-            if (addPositionAndCheckIfShouldStop(x, j))
+            if (addPositionAndCheckIfShouldStop(x, j)) {
                 break;
+            }
         }
 
         for (int j = y - 1; j >= 0; --j) {
-            if (addPositionAndCheckIfShouldStop(x, j))
+            if (addPositionAndCheckIfShouldStop(x, j)) {
                 break;
+            }
         }
 
         return currentPositions;
@@ -52,23 +55,27 @@ class MovesCreator {
     Set<Square> getDiagonalMoves() {
         setupCurrentPositions();
         for (int i = x + 1, j = y - 1; i < Board.rowsNum && j >= 0; ++i, --j) {
-            if (addPositionAndCheckIfShouldStop(i, j))
+            if (addPositionAndCheckIfShouldStop(i, j)) {
                 break;
+            }
         }
 
         for (int i = x + 1, j = y + 1; i < Board.rowsNum && j < Board.columnsNum; ++i, ++j) {
-            if (addPositionAndCheckIfShouldStop(i, j))
+            if (addPositionAndCheckIfShouldStop(i, j)) {
                 break;
+            }
         }
 
         for (int i = x - 1, j = y - 1; i >= 0 && j >= 0; --i, --j) {
-            if (addPositionAndCheckIfShouldStop(i, j))
+            if (addPositionAndCheckIfShouldStop(i, j)) {
                 break;
+            }
         }
 
         for (int i = x - 1, j = y + 1; i >= 0 && j < Board.columnsNum; --i, ++j) {
-            if (addPositionAndCheckIfShouldStop(i, j))
+            if (addPositionAndCheckIfShouldStop(i, j)) {
                 break;
+            }
         }
 
         return currentPositions;
@@ -82,8 +89,9 @@ class MovesCreator {
     private boolean addPositionAndCheckIfShouldStop(int i, int j) {
         var currentPiece = board.getPiece(i, j);
         if (currentPiece != null) {
-            if (currentPiece.colour != pieceColour)
+            if (currentPiece.colour != pieceColour) {
                 currentPositions.add(new Square(i, j));
+            }
             return true;
         }
 

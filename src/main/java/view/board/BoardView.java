@@ -95,17 +95,37 @@ public class BoardView {
             MoveTrace moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
             if (moveTrace.isValid()) {
                 pieceDisplay.moveView(selectedPieceSquare, clickedSquare);
-                if (moveTrace.isGameOver()) {
-                    handleGameOver(moveTrace);
-                }
-                else if (moveTrace.move.isPromotionMove()) {
+
+                var move = moveTrace.move;
+                if (move.isPromotionMove()) {
                     var promotionClass = getPromotionClass();
-                    var dest = moveTrace.move.getDestination();
+                    var dest = move.getDestination();
                     MoveTrace promotionMoveTrace = controller.promotePiece(dest, promotionClass);
                     pieceDisplay.updateView(dest);
                     if (promotionMoveTrace.isGameOver()) {
                         handleGameOver(promotionMoveTrace);
                     }
+                }
+                else if (move.isEnPassantMove()) {
+                    var source = move.getSource();
+                    var dest = move.getDestination();
+                    pieceDisplay.updateView(new Square(source.x, dest.y));
+                }
+                else if (move.isCastlingMove()) {
+                    var source = move.getSource();
+                    var dest = move.getDestination();
+                    if (dest.y > source.y) {
+                        pieceDisplay.updateView(new Square(source.x, dest.y - 1));
+                        pieceDisplay.updateView(new Square(source.x, Board.columnsNum - 1));
+                    }
+                    else {
+                        pieceDisplay.updateView(new Square(source.x, dest.y + 1));
+                        pieceDisplay.updateView(new Square(source.x, 0));
+                    }
+                }
+
+                if (moveTrace.isGameOver()) {
+                    handleGameOver(moveTrace);
                 }
             }
 

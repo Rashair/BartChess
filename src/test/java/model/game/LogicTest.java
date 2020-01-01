@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 class LogicTest extends GameTest {
-    private Logic logic;
-    private Board board;
+    private final Logic logic;
+    private final Board board;
 
     LogicTest() {
         this.logic = model.getLogic();

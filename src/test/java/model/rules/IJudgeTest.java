@@ -11,9 +11,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class IJudgeTest extends GameTest {
-    Board board = model.getBoard();
-    IJudge judge = model.getJudge();
-    State state = model.getState();
+    private final Board board;
+    private final IJudge judge;
+    private final State state;
+
+    IJudgeTest() {
+        this.board = model.getBoard();
+        this.judge = model.getJudge();
+        this.state = model.getState();
+    }
 
     @BeforeEach
     void setUp() {
