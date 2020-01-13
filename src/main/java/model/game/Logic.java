@@ -15,12 +15,14 @@ public class Logic {
     private final IJudge judge;
     private final State state;
 
-    private boolean isGameOver;
+    private Colour playerTurnColour;
 
     public Logic(Board board, IJudge judge, State state) {
         this.board = board;
         this.judge = judge;
         this.state = state;
+
+        playerTurnColour = Colour.White;
     }
 
     public void initializeBoard() {
@@ -33,49 +35,47 @@ public class Logic {
 
     public List<Move> getValidMoves(int x, int y) {
         var piece = board.getPiece(x, y);
-        return piece != null ? piece.getValidMoves(judge, x, y) :
+        return piece != null && playerTurnColour == piece.colour ? piece.getValidMoves(judge, x, y) :
                 new ArrayList<>();
     }
 
-    public MoveTrace makeMove(Move move, Colour playerColour) {
+    public MoveTrace makeMove(Move move) {
         board.movePiece(move);
-
-        return setStateAndReturnTrace(move, playerColour);
+        return setStateAndReturnTrace(move);
     }
 
     public MoveTrace promotePiece(Square pos, Class<? extends Piece> promoted) {
         board.promotePiece(pos, promoted);
         var piece = board.getPiece(pos);
-
-        return setStateAndReturnTrace(new Move(pos, pos, piece), piece.colour);
+        return setStateAndReturnTrace(new Move(pos, pos, piece));
     }
 
-    private MoveTrace setStateAndReturnTrace(Move move, Colour playerColour) {
+    private MoveTrace setStateAndReturnTrace(Move move) {
         // If valid move was made then player cannot be in check anymore.
-        if (state.isInCheck(playerColour)) {
-            state.setCheck(playerColour, false);
+        if (state.isInCheck(playerTurnColour)) {
+            state.setCheck(playerTurnColour, false);
         }
 
-        var oppositePlayerColour = playerColour.getOppositeColour();
+        var oppositePlayerColour = playerTurnColour.getOppositeColour();
         if (judge.isKingInCheck(oppositePlayerColour)) {
             state.setCheck(oppositePlayerColour, true);
         }
 
         var result = new MoveTrace(move);
         if (!judge.areAnyValidMovesForPlayer(oppositePlayerColour)) {
-            isGameOver = true;
             Colour winner = null;
             if (state.isInCheck(oppositePlayerColour)) {
-                winner = playerColour;
+                winner = playerTurnColour;
             }
 
             result.setGameOver(winner);
         }
 
-        return result;
-    }
+        // Will be called again to handle promotion
+        if (!move.isPromotionMove()) {
+            playerTurnColour = playerTurnColour.getOppositeColour();
+        }
 
-    public boolean isGameOver() {
-        return isGameOver;
+        return result;
     }
 }

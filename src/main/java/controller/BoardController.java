@@ -20,16 +20,16 @@ public class BoardController {
     private final Board board;
 
     private List<Move> currentlyConsideredMoves;
-    private Colour playerTurnColour;
+
 
     public BoardController(GameModel model) {
         this.board = model.getBoard();
         this.logic = model.getLogic();
-        this.playerTurnColour = Colour.White;
     }
 
     public void InitializeGame() {
         logic.initializeBoard();
+        currentlyConsideredMoves = new ArrayList<>();
         Colour randomColour = Colour.getRandomColour();
         var player1 = new Human(randomColour);
         var player2 = new Computer(randomColour.getOppositeColour());
@@ -50,27 +50,22 @@ public class BoardController {
 
     public List<Square> getValidMoves(int row, int col) {
         var piece = board.getPiece(row, col);
-        if (piece != null && piece.colour == playerTurnColour) {
+        if (piece != null) {
             currentlyConsideredMoves = logic.getValidMoves(row, col);
             return currentlyConsideredMoves.stream().map(Move::getDestination).collect(Collectors.toList());
-        }
-        else {
-            currentlyConsideredMoves = null;
         }
 
         return new ArrayList<>();
     }
 
     public MoveTrace movePiece(Square from, Square to) {
-        if (currentlyConsideredMoves != null) {
+        if (currentlyConsideredMoves.size() > 0) {
             var validMove = currentlyConsideredMoves.stream().
                     filter((Move move) -> move.getSource().equals(from) && move.getDestination().equals(to)).
                     findFirst();
             if (validMove.isPresent()) {
                 var move = validMove.get();
-                var result = logic.makeMove(move, playerTurnColour);
-                playerTurnColour = playerTurnColour.getOppositeColour();
-                return result;
+                return logic.makeMove(move);
             }
         }
 
