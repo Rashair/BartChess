@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="540.0" prefWidth="960.0" stylesheets="@menu.css"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="view.menu.MenuViewController">
+    <children>
+        <Pane layoutX="212.0" layoutY="145.0" prefHeight="341.0" prefWidth="342.0">
+            <children>
+                <Button fx:id="exitGameButton" cancelButton="true" layoutX="76.0" layoutY="220.0"
+                        mnemonicParsing="false" onAction="#onExitGameButtonClick" opacity="0.75" prefHeight="50.0"
+                        prefWidth="180.0" text="Exit" textAlignment="CENTER">
+                    <font>
+                        <Font name="Calibri" size="24.0"/>
+                    </font>
+                </Button>
+                <Button fx:id="newGameButton" alignment="TOP_CENTER" contentDisplay="TOP" defaultButton="true"
+                        layoutX="76.0" layoutY="60.0" mnemonicParsing="false" onAction="#onNewGameButtonClick"
+                        opacity="0.75" prefHeight="50.0" prefWidth="180.0" text="New Game" textAlignment="CENTER">
+                    <font>
+                        <Font name="Calibri" size="24.0"/>
+                    </font>
+                </Button>
+                <Button fx:id="loadGameButton" layoutX="76.0" layoutY="140.0" mnemonicParsing="false"
+                        onAction="#onLoadGameButtonClick" opacity="0.75" prefHeight="50.0" prefWidth="180.0"
+                        text="Load Game" textAlignment="CENTER">
+                    <font>
+                        <Font name="Calibri" size="24.0"/>
+                    </font>
+                </Button>
+            </children>
+        </Pane>
+    </children>
+    <effect>
+        <Bloom threshold="0.95"/>
+    </effect>
+</AnchorPane>

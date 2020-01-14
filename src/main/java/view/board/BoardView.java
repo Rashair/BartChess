@@ -39,6 +39,7 @@ public class BoardView {
     public BoardView(BoardController controller) {
         this.controller = controller;
         boardGrid = new GridPane();
+        boardGrid.setId("boardGrid");
         boardGrid.getStylesheets().add(this.getClass().getResource("board.css").toExternalForm());
         panels = new StackPane[Board.rowsNum][Board.columnsNum];
 

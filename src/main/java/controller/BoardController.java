@@ -21,18 +21,15 @@ public class BoardController {
 
     private List<Move> currentlyConsideredMoves;
 
-
     public BoardController(GameModel model) {
         this.board = model.getBoard();
         this.logic = model.getLogic();
     }
 
     public void InitializeGame() {
+        // TODO: Pass player colour here
         logic.initializeBoard();
         currentlyConsideredMoves = new ArrayList<>();
-        Colour randomColour = Colour.getRandomColour();
-        var player1 = new Human(randomColour);
-        var player2 = new Computer(randomColour.getOppositeColour());
     }
 
     public void NewGame() {
