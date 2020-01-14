@@ -1,6 +1,7 @@
 package view.board;
 
 import controller.BoardController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
 import model.Colour;
 import model.game.MoveTrace;
 import model.grid.Board;
+import model.grid.Move;
 import model.grid.Square;
 import model.pieces.Piece;
 import view.game_over.GameOverWindowController;
@@ -25,6 +27,7 @@ import view.promotion.PromotionWindowController;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.*;
 
 public class BoardView {
     private final BoardController controller;
@@ -35,6 +38,8 @@ public class BoardView {
     private final GridPane boardGrid;
     private final StackPane[][] panels;
     private Square selectedPieceSquare;
+
+    private CompletableFuture<MoveTrace> computerMove;
 
     public BoardView(BoardController controller) {
         this.controller = controller;
@@ -92,44 +97,15 @@ public class BoardView {
         System.out.println("Clicked " + row + " " + col);
 
         var clickedSquare = new Square(row, col);
-        if (selectedPieceSquare != null && highlight.contains(clickedSquare)) {
+        if (computerMove == null && selectedPieceSquare != null && highlight.contains(clickedSquare)) {
             MoveTrace moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
             if (moveTrace.isValid()) {
-                pieceDisplay.moveView(selectedPieceSquare, clickedSquare);
-
-                var move = moveTrace.move;
-                if (move.isPromotionMove()) {
-                    var promotionClass = getPromotionClass();
-                    var dest = move.getDestination();
-                    MoveTrace promotionMoveTrace = controller.promotePiece(dest, promotionClass);
-                    pieceDisplay.updateView(dest);
-                    if (promotionMoveTrace.isGameOver()) {
-                        handleGameOver(promotionMoveTrace);
-                    }
-                }
-                else if (move.isEnPassantMove()) {
-                    var source = move.getSource();
-                    var dest = move.getDestination();
-                    pieceDisplay.updateView(new Square(source.x, dest.y));
-                }
-                else if (move.isCastlingMove()) {
-                    var source = move.getSource();
-                    var dest = move.getDestination();
-                    if (dest.y > source.y) {
-                        pieceDisplay.updateView(new Square(source.x, dest.y - 1));
-                        pieceDisplay.updateView(new Square(source.x, Board.columnsNum - 1));
-                    }
-                    else {
-                        pieceDisplay.updateView(new Square(source.x, dest.y + 1));
-                        pieceDisplay.updateView(new Square(source.x, 0));
-                    }
-                }
-
-                if (moveTrace.isGameOver()) {
-                    handleGameOver(moveTrace);
+                onMove(moveTrace);
+                if (!moveTrace.isGameOver()) {
+                    computerMove = controller.makeComputerMove();
+                    Platform.runLater(this::updateGUIWhenMoveFinished);
                 }
             }
-
             removeHighlight();
         }
         else if (!controller.isEmptySquare(row, col)) {
@@ -143,6 +119,61 @@ public class BoardView {
         }
         else {
             removeHighlight();
+        }
+    }
+
+    private void onMove(MoveTrace moveTrace) {
+        var move = moveTrace.move;
+        pieceDisplay.moveView(move.getSource(), move.getDestination());
+
+        if (move.isPromotionMove()) {
+            var promotionClass = getPromotionClass();
+            var dest = move.getDestination();
+            MoveTrace promotionMoveTrace = controller.promotePiece(dest, promotionClass);
+            pieceDisplay.updateView(dest);
+            if (promotionMoveTrace.isGameOver()) {
+                handleGameOver(promotionMoveTrace);
+            }
+        }
+        else if (move.isEnPassantMove()) {
+            var source = move.getSource();
+            var dest = move.getDestination();
+            pieceDisplay.updateView(new Square(source.x, dest.y));
+        }
+        else if (move.isCastlingMove()) {
+            var source = move.getSource();
+            var dest = move.getDestination();
+            if (dest.y > source.y) {
+                pieceDisplay.updateView(new Square(source.x, dest.y - 1));
+                pieceDisplay.updateView(new Square(source.x, Board.columnsNum - 1));
+            }
+            else {
+                pieceDisplay.updateView(new Square(source.x, dest.y + 1));
+                pieceDisplay.updateView(new Square(source.x, 0));
+            }
+        }
+
+        if (moveTrace.isGameOver()) {
+            handleGameOver(moveTrace);
+        }
+    }
+
+    private void updateGUIWhenMoveFinished() {
+        if (computerMove.isDone()) {
+            onComputerMoveFinished();
+        }
+        else {
+            Platform.runLater(this::updateGUIWhenMoveFinished);
+        }
+    }
+
+    private void onComputerMoveFinished() {
+        try {
+            var trace = computerMove.get();
+            onMove(trace);
+            computerMove = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 

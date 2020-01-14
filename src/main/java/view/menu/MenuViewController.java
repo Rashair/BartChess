@@ -22,7 +22,6 @@ public class MenuViewController {
 
     @FXML
     public void initialize() {
-
     }
 
     public void onNewGameButtonClick(ActionEvent actionEvent) {

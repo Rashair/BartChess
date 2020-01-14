@@ -16,8 +16,4 @@ public abstract class Player {
     public Colour getColour() {
         return colour;
     }
-
-    public abstract Square chooseSourceSquare();
-
-    public abstract Move chooseMove(List<Move> validMoves);
 }

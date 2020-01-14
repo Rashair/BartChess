@@ -13,6 +13,7 @@ import model.players.Human;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class BoardController {
@@ -21,13 +22,17 @@ public class BoardController {
 
     private List<Move> currentlyConsideredMoves;
 
+    private final Computer computer;
+
     public BoardController(GameModel model) {
         this.board = model.getBoard();
         this.logic = model.getLogic();
+
+        this.computer = new Computer(Colour.Black, logic, board);
     }
 
     public void InitializeGame() {
-        // TODO: Pass player colour here
+        // TODO: Pass chosen player colour here
         logic.initializeBoard();
         currentlyConsideredMoves = new ArrayList<>();
     }
@@ -71,5 +76,9 @@ public class BoardController {
 
     public MoveTrace promotePiece(Square square, Class<? extends Piece> promoted) {
         return logic.promotePiece(square, promoted);
+    }
+
+    public CompletableFuture<MoveTrace> makeComputerMove() {
+        return CompletableFuture.supplyAsync(computer::makeMove);
     }
 }
