@@ -18,11 +18,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.util.Pair;
 import model.Colour;
 import model.game.MoveTrace;
 import model.grid.Board;
 import model.grid.Square;
+import model.pieces.King;
 import model.pieces.Piece;
 import model.pieces.Queen;
 import model.players.GameMode;
@@ -199,7 +199,19 @@ public class BoardView {
             }
         }
 
+        if (highlight.isInCheck()) {
+            if (move.getMovedPiece() instanceof King) {
+                highlight.setCheck(move.getSource(), false);
+            }
+            else {
+                highlight.setCheck(controller.getKingPosition(currentPlayerColour), false);
+            }
+        }
+
         currentPlayerColour = currentPlayerColour.getOppositeColour();
+        if (controller.isInCheck(currentPlayerColour)) {
+            highlight.setCheck(controller.getKingPosition(currentPlayerColour), true);
+        }
         if (moveTrace.isGameOver()) {
             handleGameOver(moveTrace);
         }
@@ -229,7 +241,6 @@ public class BoardView {
             }
         } catch (Exception e) {
             e.printStackTrace();
-
             System.out.println("Error while doing computer move: " + e.getMessage());
         }
     }

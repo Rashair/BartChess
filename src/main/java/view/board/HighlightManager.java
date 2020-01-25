@@ -7,15 +7,28 @@ import model.grid.Square;
 import java.util.List;
 
 public class HighlightManager {
-    private final PseudoClass highlight;
     private final StackPane[][] panels;
+    private final PseudoClass highlightMove;
+    private final PseudoClass highlightCheck;
 
     private List<Square> currentlyHighlighted;
     private Square selectedSquare;
+    private boolean isInCheck = true;
 
     HighlightManager(StackPane[][] panels) {
         this.panels = panels;
-        highlight = PseudoClass.getPseudoClass("highlighted");
+        highlightMove = PseudoClass.getPseudoClass("highlighted");
+        highlightCheck = PseudoClass.getPseudoClass("in-check");
+    }
+
+    void setCheck(Square s, boolean val) {
+        isInCheck = val;
+        var squareView = panels[s.x][s.y];
+        squareView.pseudoClassStateChanged(highlightCheck, val);
+    }
+
+    boolean isInCheck() {
+        return isInCheck;
     }
 
     void set(List<Square> squares, Square selected) {
@@ -45,7 +58,6 @@ public class HighlightManager {
 
     private void setHighlightForSquare(Square s, boolean val) {
         var squareView = panels[s.x][s.y];
-        squareView.pseudoClassStateChanged(highlight, val);
+        squareView.pseudoClassStateChanged(highlightMove, val);
     }
-
 }

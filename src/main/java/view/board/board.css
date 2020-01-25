@@ -16,3 +16,8 @@
 .squareEven:highlighted, .squareOdd:highlighted {
     -fx-effect: innershadow(gaussian, rgba(255, 255, 0, 0.5), 15, 0.8, 0, 0);
 }
+
+/*noinspection CssInvalidPseudoSelector*/
+.squareEven:in-check, .squareOdd:in-check {
+    -fx-effect: innershadow(gaussian, rgba(255, 0, 0, 0.7), 15, 0.8, 0, 0);
+}

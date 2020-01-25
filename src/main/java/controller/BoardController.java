@@ -4,6 +4,7 @@ import model.Colour;
 import model.GameModel;
 import model.game.Logic;
 import model.game.MoveTrace;
+import model.game.State;
 import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
@@ -18,12 +19,14 @@ import java.util.stream.Collectors;
 public class BoardController {
     private final Logic logic;
     private final Board board;
+    private final State state;
     private final ComputerLogic computerLogic;
     private List<Move> currentlyConsideredMoves;
 
     public BoardController(GameModel model) {
         this.board = model.getBoard();
         this.logic = model.getLogic();
+        this.state = model.getState();
         this.computerLogic = new ComputerLogic(logic, board);
     }
 
@@ -79,5 +82,13 @@ public class BoardController {
 
     public Colour getPlayerColourTurn() {
         return logic.getPlayerTurnColour();
+    }
+
+    public boolean isInCheck(Colour playerColour) {
+        return state.isInCheck(playerColour);
+    }
+
+    public Square getKingPosition(Colour colour) {
+        return board.getKingPosition(colour);
     }
 }
