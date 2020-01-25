@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.promotion.PromotionWindowController">
-    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="34.0" text="Choose figure for promotion" AnchorPane.leftAnchor="148.0" AnchorPane.rightAnchor="148.0">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.promotion.PromotionWindowController">
+    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="34.0" text="Choose figure for promotion"
+           AnchorPane.leftAnchor="148.0" AnchorPane.rightAnchor="148.0">
         <font>
-            <Font name="System" size="24.0" />
+            <Font name="System" size="24.0"/>
         </font>
     </Label>
-    <Button layoutX="337.0" layoutY="252.0" mnemonicParsing="false" onAction="#onPawnButtonClick" prefHeight="108.0" prefWidth="97.0" text="♙">
+    <Button layoutX="337.0" layoutY="252.0" mnemonicParsing="false" onAction="#onPawnButtonClick" prefHeight="108.0"
+            prefWidth="97.0" text="♙">
         <font>
-            <Font size="40.0" />
+            <Font size="40.0"/>
         </font>
     </Button>
-    <Button layoutX="90.0" layoutY="105.0" mnemonicParsing="false" onAction="#onQueenButtonClick" prefHeight="108.0" prefWidth="97.0" text="♕">
+    <Button layoutX="90.0" layoutY="105.0" mnemonicParsing="false" onAction="#onQueenButtonClick" prefHeight="108.0"
+            prefWidth="97.0" text="♕">
         <font>
-            <Font size="40.0" />
+            <Font size="40.0"/>
         </font>
     </Button>
-    <Button layoutX="252.0" layoutY="105.0" mnemonicParsing="false" onAction="#onRookButtonClick" prefHeight="108.0" prefWidth="97.0" text="♖">
+    <Button layoutX="252.0" layoutY="105.0" mnemonicParsing="false" onAction="#onRookButtonClick" prefHeight="108.0"
+            prefWidth="97.0" text="♖">
         <font>
-            <Font size="40.0" />
+            <Font size="40.0"/>
         </font>
     </Button>
-    <Button layoutX="415.0" layoutY="105.0" mnemonicParsing="false" onAction="#onBishopButtonClick" prefHeight="108.0" prefWidth="97.0" text="♗">
+    <Button layoutX="415.0" layoutY="105.0" mnemonicParsing="false" onAction="#onBishopButtonClick" prefHeight="108.0"
+            prefWidth="97.0" text="♗">
         <font>
-            <Font size="40.0" />
+            <Font size="40.0"/>
         </font>
     </Button>
-    <Button layoutX="170.0" layoutY="252.0" mnemonicParsing="false" onAction="#onKnightButtonClick" prefHeight="108.0" prefWidth="97.0" text="♘">
+    <Button layoutX="170.0" layoutY="252.0" mnemonicParsing="false" onAction="#onKnightButtonClick" prefHeight="108.0"
+            prefWidth="97.0" text="♘">
         <font>
-            <Font size="40.0" />
+            <Font size="40.0"/>
         </font>
     </Button>
 </AnchorPane>

@@ -30,8 +30,9 @@ class PawnMoveValidator {
 
             Square forwardTwo = new Square(pos.x + 2 * direction, pos.y);
             int firstRow = pawn.colour == Colour.White ? 1 : Board.rowsNum - 2;
-            if (pos.x == firstRow && board.isEmptySquare(forwardTwo))
+            if (pos.x == firstRow && board.isEmptySquare(forwardTwo)) {
                 possiblePositions.add(forwardTwo);
+            }
         }
 
         var attackPositions = getPossiblePawnAttackPositions(direction);
@@ -40,8 +41,9 @@ class PawnMoveValidator {
         var result = Move.createMovesFromSource(pos, pawn, possiblePositions);
         result.forEach(move -> {
             var dest = move.getDestination();
-            if (dest.x == 0 || dest.x == Board.rowsNum - 1)
+            if (dest.x == 0 || dest.x == Board.rowsNum - 1) {
                 move.setPromotionMove();
+            }
             if (attackPositions.contains(dest) && board.getPiece(dest) == null) {
                 move.setEnPassantMove();
             }
@@ -60,24 +62,27 @@ class PawnMoveValidator {
         var pieceOnLeft = board.getPiece(attackLeft);
         var pieceSkipLeft = board.getPiece(skipLeft);
         if ((pieceOnLeft != null && pieceOnLeft.colour != pawn.colour)
-                || (isLastMoveTheFirstForEnemyPawn && pieceSkipLeft == lastMove.getMovedPiece()))
+                || (isLastMoveTheFirstForEnemyPawn && pieceSkipLeft == lastMove.getMovedPiece())) {
             possibleAttackPositions.add(attackLeft);
+        }
 
         Square attackRight = new Square(pos.x + direction, pos.y + 1);
         Square skipRight = new Square(pos.x, pos.y + 1);
         var pieceOnRight = board.getPiece(attackRight);
         var pieceSkipRight = board.getPiece(skipRight);
         if ((pieceOnRight != null && pieceOnRight.colour != pawn.colour)
-                || (isLastMoveTheFirstForEnemyPawn && lastMove.getMovedPiece() == pieceSkipRight))
+                || (isLastMoveTheFirstForEnemyPawn && lastMove.getMovedPiece() == pieceSkipRight)) {
             possibleAttackPositions.add(attackRight);
+        }
 
         return possibleAttackPositions;
     }
 
 
     private boolean isFirstPawnMove(Move move) {
-        if (move == null)
+        if (move == null) {
             return false;
+        }
 
         var source = move.getSource();
         var dest = move.getDestination();

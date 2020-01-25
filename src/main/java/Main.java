@@ -1,12 +1,8 @@
-import controller.BoardController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import model.GameModel;
-import view.board.BoardView;
 import view.menu.MenuViewController;
 
 import java.io.IOException;

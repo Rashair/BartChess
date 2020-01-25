@@ -12,7 +12,7 @@ import model.players.ComputerLogic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class BoardController {

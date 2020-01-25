@@ -5,11 +5,9 @@ import model.game.Logic;
 import model.game.MoveTrace;
 import model.grid.Board;
 import model.grid.Move;
-import model.grid.Square;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 public class ComputerLogic {
