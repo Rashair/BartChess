@@ -1,6 +1,8 @@
 package view.board;
 
 import controller.BoardController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -15,12 +17,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.Colour;
 import model.game.MoveTrace;
 import model.grid.Board;
-import model.grid.Move;
 import model.grid.Square;
 import model.pieces.Piece;
+import model.pieces.Queen;
+import model.players.GameMode;
 import view.game_over.GameOverWindowController;
 import view.promotion.PromotionWindowController;
 
@@ -28,32 +32,37 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
+import java.util.function.Function;
 
 public class BoardView {
     private final BoardController controller;
+    private final GameMode mode;
+    private final Colour humanColour;
 
     private final PieceDisplayManager pieceDisplay;
     private final HighlightManager highlight;
-
     private final GridPane boardGrid;
-    private final StackPane[][] panels;
     private Square selectedPieceSquare;
 
-    private CompletableFuture<MoveTrace> computerMove;
+    private CompletableFuture<MoveTrace> currentPlayerMove;
+    private Colour currentPlayerColour;
 
-    public BoardView(BoardController controller) {
+    public BoardView(BoardController controller, GameMode mode, Colour humanColour) {
         this.controller = controller;
+        this.mode = mode;
+        this.humanColour = humanColour;
+
         boardGrid = new GridPane();
         boardGrid.setId("boardGrid");
         boardGrid.getStylesheets().add(this.getClass().getResource("board.css").toExternalForm());
-        panels = new StackPane[Board.rowsNum][Board.columnsNum];
-
-        var font = new Font("Tahoma", 48);
+        StackPane[][] panels = new StackPane[Board.rowsNum][Board.columnsNum];
+        highlight = new HighlightManager(panels);
+        Font font = new Font("Tahoma", 48);
         pieceDisplay = new PieceDisplayManager(controller, panels, font);
+
         for (int row = 0; row < Board.rowsNum; ++row) {
             for (int col = 0; col < Board.columnsNum; ++col) {
-                var viewRow = Board.rowsNum - row - 1;
-
+                var viewRow = humanColour == Colour.Black ? row : Board.rowsNum - row - 1;
                 StackPane squarePanel = new StackPane();
                 panels[viewRow][col] = squarePanel;
                 String styleClass = (row + col) % 2 == 0 ? "squareEven" : "squareOdd";
@@ -67,7 +76,6 @@ public class BoardView {
                 final int finalRow = viewRow;
                 final int finalCol = col;
                 squarePanel.setOnMouseClicked((MouseEvent event) -> onSquareClicked(event, finalRow, finalCol));
-
                 boardGrid.add(squarePanel, col, row);
             }
         }
@@ -89,21 +97,52 @@ public class BoardView {
             constraint.setFillWidth(true);
             boardGrid.getColumnConstraints().add(constraint);
         }
+    }
 
-        highlight = new HighlightManager(panels);
+    public void startGame() {
+        currentPlayerColour = Colour.White;
+        currentPlayerMove = CompletableFuture.supplyAsync(MoveTrace::new);
+        if (mode == GameMode.COMPUTER_COMPUTER) {
+            boardGrid.setOnMouseClicked((e) -> makeComputerMove());
+        }
+        else if (humanColour == Colour.Black) {
+            final KeyFrame kf1 = new KeyFrame(Duration.seconds(0), e -> {
+                currentPlayerMove = controller.makeComputerMove(currentPlayerColour);
+            });
+            final KeyFrame kf2 = new KeyFrame(Duration.seconds(1), e -> updateGUIWhenComputerMoveFinished());
+            final Timeline timeline = new Timeline(kf1, kf2);
+            Platform.runLater(timeline::play);
+        }
+    }
+
+    private void makeComputerMove() {
+        if (currentPlayerMove.isDone()) {
+            currentPlayerMove = controller.makeComputerMove(currentPlayerColour);
+            updateGUIWhenComputerMoveFinished();
+            Platform.runLater(() -> Platform.runLater(this::makeComputerMove));
+        }
+        else {
+            final KeyFrame kf1 = new KeyFrame(Duration.seconds(0), e -> {
+            });
+            final KeyFrame kf2 = new KeyFrame(Duration.millis(500), e -> makeComputerMove());
+            final Timeline timeline = new Timeline(kf1, kf2);
+            Platform.runLater(timeline::play);
+        }
     }
 
     private void onSquareClicked(MouseEvent event, int row, int col) {
         System.out.println("Clicked " + row + " " + col);
 
         var clickedSquare = new Square(row, col);
-        if (computerMove == null && selectedPieceSquare != null && highlight.contains(clickedSquare)) {
+        if (currentPlayerMove.isDone() && selectedPieceSquare != null && highlight.contains(clickedSquare)) {
             MoveTrace moveTrace = controller.movePiece(selectedPieceSquare, clickedSquare);
             if (moveTrace.isValid()) {
                 onMove(moveTrace);
                 if (!moveTrace.isGameOver()) {
-                    computerMove = controller.makeComputerMove();
-                    Platform.runLater(this::updateGUIWhenMoveFinished);
+                    if (mode == GameMode.PLAYER_COMPUTER) {
+                        currentPlayerMove = controller.makeComputerMove(currentPlayerColour);
+                        Platform.runLater(this::updateGUIWhenComputerMoveFinished);
+                    }
                 }
             }
             removeHighlight();
@@ -122,12 +161,12 @@ public class BoardView {
         }
     }
 
-    private void onMove(MoveTrace moveTrace) {
+    private void onMove(MoveTrace moveTrace, boolean isComputerMove) {
         var move = moveTrace.move;
         pieceDisplay.moveView(move.getSource(), move.getDestination());
 
         if (move.isPromotionMove()) {
-            var promotionClass = getPromotionClass();
+            var promotionClass = getPromotionClass(isComputerMove);
             var dest = move.getDestination();
             MoveTrace promotionMoveTrace = controller.promotePiece(dest, promotionClass);
             pieceDisplay.updateView(dest);
@@ -153,27 +192,31 @@ public class BoardView {
             }
         }
 
+        currentPlayerColour = currentPlayerColour.getOppositeColour();
         if (moveTrace.isGameOver()) {
             handleGameOver(moveTrace);
         }
     }
 
-    private void updateGUIWhenMoveFinished() {
-        if (computerMove.isDone()) {
+    private void onMove(MoveTrace moveTrace) {
+        onMove(moveTrace, false);
+    }
+
+    private void updateGUIWhenComputerMoveFinished() {
+        if (currentPlayerMove.isDone()) {
             onComputerMoveFinished();
         }
         else {
-            Platform.runLater(this::updateGUIWhenMoveFinished);
+            Platform.runLater(this::updateGUIWhenComputerMoveFinished);
         }
     }
 
     private void onComputerMoveFinished() {
         try {
-            var trace = computerMove.get();
-            onMove(trace);
-            computerMove = null;
+            var trace = currentPlayerMove.get();
+            onMove(trace, true);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error while doing computer move: " + e.getMessage());
         }
     }
 
@@ -203,7 +246,11 @@ public class BoardView {
         }
     }
 
-    private Class<? extends Piece> getPromotionClass() {
+    private Class<? extends Piece> getPromotionClass(boolean isComputerMove) {
+        if (isComputerMove) {
+            return Queen.class;
+        }
+
         FXMLLoader loader;
         Parent root;
         try {

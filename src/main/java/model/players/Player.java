@@ -6,14 +6,7 @@ import model.grid.Square;
 
 import java.util.List;
 
-public abstract class Player {
-    private Colour colour;
-
-    public Player(Colour colour) {
-        this.colour = colour;
-    }
-
-    public Colour getColour() {
-        return colour;
-    }
+public enum Player {
+    Human,
+    Computer
 }

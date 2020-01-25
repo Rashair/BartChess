@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.game_mode.GameSettingsWindowController">
+    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="34.0" text="Choose game mode"
+           AnchorPane.leftAnchor="148.0" AnchorPane.rightAnchor="148.0">
+        <font>
+            <Font name="System" size="24.0"/>
+        </font>
+    </Label>
+    <Button alignment="CENTER" contentDisplay="CENTER" layoutX="168.0" layoutY="100.0" mnemonicParsing="false"
+            onAction="#onPlayerPlayerButtonClick" prefHeight="30.0" prefWidth="250.0" text="Player vs Player">
+        <font>
+            <Font name="Calibri" size="22.0"/>
+        </font>
+        <cursor>
+            <Cursor fx:constant="HAND"/>
+        </cursor>
+    </Button>
+    <Button alignment="CENTER" contentDisplay="CENTER" layoutX="168.0" layoutY="180.0" mnemonicParsing="false"
+            onAction="#onPlayerComputerButtonClick" prefHeight="30.0" prefWidth="250.0" text="Player vs Computer">
+        <font>
+            <Font name="Calibri" size="22.0"/>
+        </font>
+        <cursor>
+            <Cursor fx:constant="HAND"/>
+        </cursor>
+    </Button>
+    <Button alignment="CENTER" contentDisplay="CENTER" layoutX="168.0" layoutY="260.0" mnemonicParsing="false"
+            onAction="#onComputerComputerButtonClick" prefHeight="30.0" prefWidth="250.0" text="Computer vs Computer">
+        <font>
+            <Font name="Calibri" size="22.0"/>
+        </font>
+        <cursor>
+            <Cursor fx:constant="HAND"/>
+        </cursor>
+    </Button>
+
+
+</AnchorPane>

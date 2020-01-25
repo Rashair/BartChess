@@ -7,37 +7,37 @@ import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
-public class Computer extends Player {
+public class ComputerLogic {
     private final Logic logic;
     private final Board board;
 
-    public Computer(Colour colour, Logic logic, Board board) {
-        super(colour);
+    public ComputerLogic(Logic logic, Board board) {
         this.logic = logic;
         this.board = board;
     }
 
-    public Move chooseMove() {
+    private Move chooseMove(Colour colour) {
+        List<Move> allMoves = new LinkedList<>();
         for (int i = 0; i < Board.rowsNum; ++i) {
             for (int j = 0; j < Board.columnsNum; ++j) {
                 var piece = board.getPiece(i, j);
-                if (piece != null && piece.colour == this.getColour()) {
+                if (piece != null && piece.colour == colour) {
                     var moves = logic.getValidMoves(i, j);
-                    if (!moves.isEmpty()) {
-                        return moves.get(0);
-                    }
+                    allMoves.addAll(moves);
                 }
             }
         }
 
-        return null;
+        return allMoves.get(new Random().nextInt(allMoves.size()));
     }
 
-    public MoveTrace makeMove() {
-        var move = chooseMove();
+    public MoveTrace makeMove(Colour colour) {
+        var move = chooseMove(colour);
         if (move != null) {
             return logic.makeMove(move);
         }

@@ -8,8 +8,7 @@ import model.grid.Board;
 import model.grid.Move;
 import model.grid.Square;
 import model.pieces.Piece;
-import model.players.Computer;
-import model.players.Human;
+import model.players.ComputerLogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,26 +18,18 @@ import java.util.stream.Collectors;
 public class BoardController {
     private final Logic logic;
     private final Board board;
-
+    private final ComputerLogic computerLogic;
     private List<Move> currentlyConsideredMoves;
-
-    private final Computer computer;
 
     public BoardController(GameModel model) {
         this.board = model.getBoard();
         this.logic = model.getLogic();
-
-        this.computer = new Computer(Colour.Black, logic, board);
+        this.computerLogic = new ComputerLogic(logic, board);
     }
 
-    public void InitializeGame() {
-        // TODO: Pass chosen player colour here
+    public void InitializeGame(Colour playerColour) {
         logic.initializeBoard();
         currentlyConsideredMoves = new ArrayList<>();
-    }
-
-    public void NewGame() {
-        //var interaction = new Interaction(logic, player1, player2);
     }
 
     public boolean isEmptySquare(int row, int col) {
@@ -78,7 +69,7 @@ public class BoardController {
         return logic.promotePiece(square, promoted);
     }
 
-    public CompletableFuture<MoveTrace> makeComputerMove() {
-        return CompletableFuture.supplyAsync(computer::makeMove);
+    public CompletableFuture<MoveTrace> makeComputerMove(Colour colour) {
+        return CompletableFuture.supplyAsync(() -> computerLogic.makeMove(colour));
     }
 }

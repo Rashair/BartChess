@@ -21,8 +21,11 @@ public class Logic {
         this.board = board;
         this.judge = judge;
         this.state = state;
-
         playerTurnColour = Colour.White;
+    }
+
+    public Colour getPlayerTurnColour() {
+        return playerTurnColour;
     }
 
     public void initializeBoard() {
