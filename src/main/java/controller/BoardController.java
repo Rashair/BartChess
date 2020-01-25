@@ -72,4 +72,12 @@ public class BoardController {
     public CompletableFuture<MoveTrace> makeComputerMove(Colour colour) {
         return CompletableFuture.supplyAsync(() -> computerLogic.makeMove(colour));
     }
+
+    public boolean isGameOver() {
+        return logic.isGameOver();
+    }
+
+    public Colour getPlayerColourTurn() {
+        return logic.getPlayerTurnColour();
+    }
 }

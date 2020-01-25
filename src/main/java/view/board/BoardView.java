@@ -18,6 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import model.Colour;
 import model.game.MoveTrace;
 import model.grid.Board;
@@ -115,7 +116,11 @@ public class BoardView {
     }
 
     private void makeComputerMove() {
-        if (currentPlayerMove.isDone()) {
+        if (controller.isGameOver()) {
+            return;
+        }
+
+        if (currentPlayerMove.isDone() && currentPlayerColour == controller.getPlayerColourTurn()) {
             currentPlayerMove = controller.makeComputerMove(currentPlayerColour);
             updateGUIWhenComputerMoveFinished();
             Platform.runLater(() -> Platform.runLater(this::makeComputerMove));
@@ -131,6 +136,9 @@ public class BoardView {
 
     private void onSquareClicked(MouseEvent event, int row, int col) {
         System.out.println("Clicked " + row + " " + col);
+        if (mode != GameMode.PLAYER_PLAYER && currentPlayerColour != humanColour) {
+            return;
+        }
 
         var clickedSquare = new Square(row, col);
         if (currentPlayerMove.isDone() && selectedPieceSquare != null && highlight.contains(clickedSquare)) {
@@ -213,8 +221,15 @@ public class BoardView {
     private void onComputerMoveFinished() {
         try {
             var trace = currentPlayerMove.get();
-            onMove(trace, true);
+            if (trace.isValid()) {
+                onMove(trace, true);
+            }
+            else {
+                throw new Exception("Invalid move");
+            }
         } catch (Exception e) {
+            e.printStackTrace();
+
             System.out.println("Error while doing computer move: " + e.getMessage());
         }
     }

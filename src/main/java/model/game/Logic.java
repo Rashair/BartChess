@@ -16,6 +16,7 @@ public class Logic {
     private final State state;
 
     private Colour playerTurnColour;
+    private boolean isGameOver;
 
     public Logic(Board board, IJudge judge, State state) {
         this.board = board;
@@ -30,6 +31,10 @@ public class Logic {
 
     public void initializeBoard() {
         board.initializePieces(judge.getInitialPositionsForAllPieces());
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
     }
 
     public List<Move> getValidMoves(Square square) {
@@ -72,6 +77,7 @@ public class Logic {
             }
 
             result.setGameOver(winner);
+            isGameOver = true;
         }
 
         // Will be called again to handle promotion
