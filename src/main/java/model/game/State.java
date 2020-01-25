@@ -3,8 +3,8 @@ package model.game;
 import model.Colour;
 
 public class State {
-    private final boolean[] isInCheck;
     private static final int size = Colour.getNumberOfColours();
+    private final boolean[] isInCheck;
 
     public State() {
         isInCheck = new boolean[size];

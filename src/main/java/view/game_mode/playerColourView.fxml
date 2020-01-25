@@ -6,8 +6,8 @@
 <?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
-            xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/10.0.2-internal">
     <Label alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="34.0" text="Choose colour"
            AnchorPane.leftAnchor="148.0" AnchorPane.rightAnchor="148.0">
         <font>

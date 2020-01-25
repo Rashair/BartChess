@@ -25,6 +25,25 @@ public class Move implements Comparable<Move> {
         isCastlingMove = false;
     }
 
+    public static HashSet<Move> createMovesFromSource(String source, Piece movedPiece, String... destinations) {
+        Square sourceSquare = Board.parsePosition(source);
+        HashSet<Move> moves = new HashSet<>(destinations.length);
+        for (String dest : destinations) {
+            moves.add(new Move(sourceSquare, Board.parsePosition(dest), movedPiece));
+        }
+
+        return moves;
+    }
+
+    public static HashSet<Move> createMovesFromSource(Square source, Piece movedPiece, Set<Square> destinations) {
+        HashSet<Move> moves = new HashSet<>(destinations.size());
+        for (Square dest : destinations) {
+            moves.add(new Move(source, dest, movedPiece));
+        }
+
+        return moves;
+    }
+
     public Square getSource() {
         return source;
     }
@@ -86,24 +105,5 @@ public class Move implements Comparable<Move> {
     @Override
     public String toString() {
         return "[" + source.toString() + ", " + destination.toString() + "]";
-    }
-
-    public static HashSet<Move> createMovesFromSource(String source, Piece movedPiece, String... destinations) {
-        Square sourceSquare = Board.parsePosition(source);
-        HashSet<Move> moves = new HashSet<>(destinations.length);
-        for (String dest : destinations) {
-            moves.add(new Move(sourceSquare, Board.parsePosition(dest), movedPiece));
-        }
-
-        return moves;
-    }
-
-    public static HashSet<Move> createMovesFromSource(Square source, Piece movedPiece, Set<Square> destinations) {
-        HashSet<Move> moves = new HashSet<>(destinations.size());
-        for (Square dest : destinations) {
-            moves.add(new Move(source, dest, movedPiece));
-        }
-
-        return moves;
     }
 }

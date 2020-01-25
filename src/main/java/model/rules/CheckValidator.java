@@ -22,8 +22,6 @@ class CheckValidator {
         this.moveSimulator = new MoveSimulator(board);
     }
 
-    private enum Direction {Left, UpperLeft, Top, UpperRight, Right, LowerRight, Bottom, LowerLeft}
-
     private void setKingColour(Move move) {
         kingColour = move.getMovedPiece().colour;
     }
@@ -249,5 +247,7 @@ class CheckValidator {
     private boolean isKingAttackedFromPiece(Piece piece, Class<?> enemy) {
         return isKingAttackedFromPiece(piece, enemy, Integer.class);
     }
+
+    private enum Direction {Left, UpperLeft, Top, UpperRight, Right, LowerRight, Bottom, LowerLeft}
 
 }

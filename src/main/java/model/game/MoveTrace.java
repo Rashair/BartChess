@@ -17,13 +17,13 @@ public class MoveTrace {
         winner = null;
     }
 
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
     public void setGameOver(Colour winner) {
         isGameOver = true;
         this.winner = winner;
-    }
-
-    public boolean isGameOver() {
-        return isGameOver;
     }
 
     public boolean isDraw() {

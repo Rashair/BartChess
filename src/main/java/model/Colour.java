@@ -13,18 +13,6 @@ public enum Colour {
         this.value = value;
     }
 
-    public int getIntValue() {
-        return value ? 1 : 0;
-    }
-
-    public boolean getValue() {
-        return value;
-    }
-
-    public Colour getOppositeColour() {
-        return fromBoolean(!this.value);
-    }
-
     public static int getNumberOfColours() {
         return numberOfColours;
     }
@@ -40,5 +28,17 @@ public enum Colour {
     public static Colour getRandomColour() {
         var randomValue = ThreadLocalRandom.current().nextInt(0, numberOfColours);
         return fromInt(randomValue);
+    }
+
+    public int getIntValue() {
+        return value ? 1 : 0;
+    }
+
+    public boolean getValue() {
+        return value;
+    }
+
+    public Colour getOppositeColour() {
+        return fromBoolean(!this.value);
     }
 }

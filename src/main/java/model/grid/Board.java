@@ -28,6 +28,30 @@ public class Board {
         firstPieceMove = new HashMap<>();
     }
 
+    /**
+     * @param pos - must be in lowercase
+     * @return Square representing position on chessboard
+     */
+    public static Square parsePosition(String pos) {
+        int x = pos.charAt(1) - '1';
+        int y = pos.charAt(0) - 'a';
+
+        if (isOutOfBoardPosition(x, y)) {
+            throw new IllegalArgumentException("Provided string is invalid");
+        }
+
+        return new Square(x, y);
+    }
+
+    public static boolean isOutOfBoardPosition(int x, int y) {
+        return x < 0 || x >= rowsNum ||
+                y < 0 || y >= columnsNum;
+    }
+
+    public static boolean isOutOfBoardPosition(Square square) {
+        return isOutOfBoardPosition(square.x, square.y);
+    }
+
     public void initializePieces(List<Triple<Class<? extends Piece>, Colour, String>> piecesToPositions) {
         for (var entry : piecesToPositions) {
             Square position = parsePosition(entry.getRight());
@@ -247,29 +271,5 @@ public class Board {
         }
 
         return builder.toString();
-    }
-
-    /**
-     * @param pos - must be in lowercase
-     * @return Square representing position on chessboard
-     */
-    public static Square parsePosition(String pos) {
-        int x = pos.charAt(1) - '1';
-        int y = pos.charAt(0) - 'a';
-
-        if (isOutOfBoardPosition(x, y)) {
-            throw new IllegalArgumentException("Provided string is invalid");
-        }
-
-        return new Square(x, y);
-    }
-
-    public static boolean isOutOfBoardPosition(int x, int y) {
-        return x < 0 || x >= rowsNum ||
-                y < 0 || y >= columnsNum;
-    }
-
-    public static boolean isOutOfBoardPosition(Square square) {
-        return isOutOfBoardPosition(square.x, square.y);
     }
 }

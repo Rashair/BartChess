@@ -106,17 +106,22 @@ public class BoardView {
             boardGrid.setOnMouseClicked((e) -> makeComputerMove());
         }
         else if (humanColour == Colour.Black) {
-            final KeyFrame kf1 = new KeyFrame(Duration.seconds(0), e -> {
+            runLater(() -> {
                 currentPlayerMove = controller.makeComputerMove(currentPlayerColour);
-            });
-            final KeyFrame kf2 = new KeyFrame(Duration.seconds(1), e -> updateGUIWhenComputerMoveFinished());
-            final Timeline timeline = new Timeline(kf1, kf2);
-            Platform.runLater(timeline::play);
+            }, this::updateGUIWhenComputerMoveFinished, 1000);
         }
+    }
+
+    private void runLater(Runnable runnable1, Runnable runnable2, int timeoutMs) {
+        final KeyFrame kf1 = new KeyFrame(Duration.millis(0), e -> runnable1.run());
+        final KeyFrame kf2 = new KeyFrame(Duration.millis(timeoutMs), e -> runnable2.run());
+        final Timeline timeline = new Timeline(kf1, kf2);
+        Platform.runLater(timeline::play);
     }
 
     private void makeComputerMove() {
         if (controller.isGameOver()) {
+            System.out.println("Game over");
             return;
         }
 
@@ -126,13 +131,10 @@ public class BoardView {
             Platform.runLater(() -> Platform.runLater(this::makeComputerMove));
         }
         else {
-            final KeyFrame kf1 = new KeyFrame(Duration.seconds(0), e -> {
-            });
-            final KeyFrame kf2 = new KeyFrame(Duration.millis(500), e -> makeComputerMove());
-            final Timeline timeline = new Timeline(kf1, kf2);
-            Platform.runLater(timeline::play);
+            runLater(() -> {}, this::makeComputerMove, 750);
         }
     }
+
 
     private void onSquareClicked(MouseEvent event, int row, int col) {
         System.out.println("Clicked " + row + " " + col);

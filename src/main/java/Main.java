@@ -12,6 +12,10 @@ public class Main extends Application {
     private final int windowWidth = 1600;
     private final int windowHeight = 900;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage stage) {
         var menu = loadMenu();
@@ -35,9 +39,5 @@ public class Main extends Application {
         }
 
         return null;
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
